@@ -33,9 +33,11 @@ public class MainActivity extends ActionBarActivity {
 
         Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
         setContentView(R.layout.activity_main);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.some_container, new MainFragment())
-                .commit();
+        if(savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.some_container, new MainFragment())
+                    .commit();
+        }
     }
 
 

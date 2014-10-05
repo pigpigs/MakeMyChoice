@@ -1,8 +1,12 @@
 package com.pewpewpew.user.makemychoice;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -31,7 +35,8 @@ public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
     public static final String KEY_POST_TITLE = "post_title_key";
     private ParseQueryAdapter<ParseObject> mAdapter;
-
+    SharedPreferences mSharedPreferences;
+    private static String sortMode;
     public MainFragment(){
 
     }
@@ -39,6 +44,9 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sortMode = mSharedPreferences.getString(getActivity().getString(R.string.pref_sort_mode),getActivity().getString(R.string.pref_sort_mode_default));
+        Log.i(TAG, sortMode);
         super.onCreate(savedInstanceState);
     }
 
@@ -58,6 +66,33 @@ public class MainFragment extends Fragment {
         if (id == R.id.action_addData){
             addNewData();
             return true;
+        }else if (id == R.id.action_sortOptions){
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.sort_dialogue_title)
+                    .setItems(R.array.sort_options,new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int pos) {
+                            if(pos == 0){
+                                // Sort by Top
+                                mSharedPreferences.edit()
+                                        .putString(getActivity().getString(R.string.pref_sort_mode),"top")
+                                        .apply();
+                                sortMode = "top";
+                                Log.i(TAG, "Sort by Top");
+                            }else if(pos==1){
+                                sortMode = "new";
+                                mSharedPreferences.edit()
+                                        .putString(getActivity().getString(R.string.pref_sort_mode),sortMode)
+                                        .apply();
+                                Log.i(TAG, "Sort by New");
+                            }else{
+                                Log.i(TAG, "Sort by Hot (Not implemented)");
+                            }
+                        }
+                    });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -98,6 +133,8 @@ public class MainFragment extends Fragment {
 
                 query.orderByDescending("createdAt");
                 // TODO - Order by points, where datetime <= 5 days ago
+
+                // TODO- delete posts older than 5 days
                 return query;
             }
         };
@@ -121,6 +158,7 @@ public class MainFragment extends Fragment {
                 // Have to start thinking about how to avoid same person from upvoting one post multiple times
                 String points = String.valueOf(post.getInt("points"));
                 //Number of comments, use increment on the field every time there is a new post
+                // TODO- implement numComments
                 String numComments = String.valueOf(post.getInt("numComments"));
 
                 postData.setText(String.format(

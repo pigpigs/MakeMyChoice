@@ -6,5 +6,9 @@
         android:id="@+id/action_addData"
         android:title="Add Data"
         />
+    <item
+        android:id="@+id/action_sortOptions"
+        android:title="Sort"
+        />
 
 </menu>

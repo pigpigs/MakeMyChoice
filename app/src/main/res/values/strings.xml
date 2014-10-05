@@ -7,4 +7,7 @@
     <string name="format_post_data">
         Submitted <xliff:g id="time_since">%1$s</xliff:g> - <xliff:g id="num_comments">%2$s</xliff:g> comments - <xliff:g id="points">%3$s</xliff:g> points
     </string>
+    <string name="sort_dialogue_title">Sort Options</string>
+    <string name="pref_sort_mode">pref_sort_mode</string>
+    <string name="pref_sort_mode_default">top</string>
 </resources>
