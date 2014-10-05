@@ -1,6 +1,7 @@
 package com.pewpewpew.user.makemychoice;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,6 +29,7 @@ import java.util.Random;
  */
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
+    public static final String KEY_POST_TITLE = "post_title_key";
     private ParseQueryAdapter<ParseObject> mAdapter;
 
     public MainFragment(){
@@ -111,7 +114,7 @@ public class MainFragment extends Fragment {
 
                 TextView postData = (TextView)v.findViewById(R.id.post_data);
                 // Get timeSince, numComments and numPoints for post data
-                Log.i(TAG, post.getCreatedAt().toString());
+
                 String timeSince = Utility.getTimeSince(post.getCreatedAt());
 
                 // Upvotes on post
@@ -131,6 +134,19 @@ public class MainFragment extends Fragment {
             }
         };
         listView.setAdapter(mAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(getActivity(), DetailActivity.class);
+                // TODO- Put extras to display
+                // Pass in post ID here to retrieve anything extra
+                ParseQueryAdapter adapter = (ParseQueryAdapter) adapterView.getAdapter();
+                ParseObject post = adapter.getItem(i);
+                String title = post.getString("title");
+                intent.putExtra(KEY_POST_TITLE,title);
+                startActivity(intent);
+            }
+        });
         return view; //return own view here
     }
 }

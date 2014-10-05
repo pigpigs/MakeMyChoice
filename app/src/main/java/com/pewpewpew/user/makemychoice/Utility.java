@@ -16,7 +16,7 @@ public class Utility {
         // TODO - Longer strings for tablets, shorter for phones, use xml string resources
         Date dateToday = new Date();
         long timeSinceInSecs = (dateToday.getTime() - dateCreated.getTime()) / 1000;
-        Log.i(TAG, "Time Since: "+timeSinceInSecs);
+//        Log.i(TAG, "Time Since: "+timeSinceInSecs);
         if (timeSinceInSecs <=60){
             return "a minute ago";
         }else if(timeSinceInSecs <= 60*5){
