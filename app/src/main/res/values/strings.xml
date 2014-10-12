@@ -14,5 +14,5 @@
     <string name="title_hint">Title</string>
     <string name="title_string">Title</string>
     <string name="body_string">More Info (Optional)</string>
-    <string name="body_hint">More about your dilemma here!</string>
+    <string name="body_hint">More about your dilemma here! (Optional)</string>
 </resources>

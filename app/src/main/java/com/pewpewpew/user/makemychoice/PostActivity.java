@@ -1,6 +1,8 @@
 package com.pewpewpew.user.makemychoice;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -48,6 +50,27 @@ public class PostActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
+        String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
+        if(! (titleStr==null) || !(bodyStr == null)){
+            new AlertDialog.Builder(this)
+                    .setMessage("Are you sure you want to exit?")
+                    .setCancelable(false)
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            PostActivity.super.onBackPressed();
+                        }
+                    })
+                    .setNegativeButton("No",null)
+                    .create()
+                    .show();
+
+        }
+//        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_submit:
@@ -62,6 +85,12 @@ public class PostActivity extends ActionBarActivity {
                     ParseObject newPost = new ParseObject("Post");
                     newPost.put("title", titleStr);
                     Log.i(TAG,"New Data: "+titleStr);
+
+                    String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
+                    if (bodyStr!=null){
+                        Log.i(TAG,"Body: "+bodyStr);
+                        newPost.put("mainBody",bodyStr);
+                    }
                     newPost.saveInBackground();
                 }
             default:

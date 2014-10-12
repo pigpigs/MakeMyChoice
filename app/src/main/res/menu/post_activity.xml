@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="@string/action_submit"
         android:id="@+id/action_submit"
-        android:icon="@drawable/ic_action_next_item"
+        android:icon="@drawable/ic_action_send_now"
         app:showAsAction="always"
         />
 
