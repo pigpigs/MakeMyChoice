@@ -4,16 +4,40 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     >
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="@string/title_string"
+    android:padding="8dp"
+    />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textCapWords|textAutoCorrect|text"
+        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
         android:ems="10"
-        android:id="@+id/editText"
+        android:id="@+id/post_title_editText"
         android:hint="@string/title_hint"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/body_string"
+        android:padding="8dp"
+        />
+    <EditText
+        android:gravity="left|top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textCapWords|textAutoCorrect|textMultiLine"
+        android:ems="10"
+        android:id="@+id/post_mainBody_editText"
+        android:hint="@string/body_hint"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:lines="7"
+        android:scrollbars="vertical"
         />
 </LinearLayout>

@@ -11,5 +11,8 @@
     <string name="pref_sort_mode">pref_sort_mode</string>
     <string name="pref_sort_mode_default">top</string>
     <string name="action_submit">Submit Post</string>
-    <string name="title_hint">TItle</string>
+    <string name="title_hint">Title</string>
+    <string name="title_string">Title</string>
+    <string name="body_string">More Info (Optional)</string>
+    <string name="body_hint">More about your dilemma here!</string>
 </resources>

@@ -67,7 +67,6 @@ public class MainFragment extends Fragment {
             addNewData();
             return true;
         }else if (id == R.id.action_sortOptions){
-            // TODO - Reload data once option changes!
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.sort_dialogue_title)
                     .setItems(R.array.sort_options,new DialogInterface.OnClickListener() {
@@ -150,9 +149,9 @@ public class MainFragment extends Fragment {
                 // Not putting datetime constraints for now, since data is planned to be released after
                 // a week or so, unless user feedback says otherwise.
                 Log.i(TAG, "Changing sort mode...");
-                if (sortMode == "new"){
+                if (sortMode.equals("new")){
                     query.orderByDescending("createdAt");
-                }else if(sortMode == "top"){
+                }else if(sortMode.equals("top")){
                     query.orderByDescending("points");
                 }
 
