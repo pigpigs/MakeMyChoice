@@ -10,5 +10,10 @@
         android:id="@+id/action_sortOptions"
         android:title="Sort"
         />
+    <item
+        android:id="@+id/action_newPost"
+        android:title="New Post"
+
+        />
 
 </menu>

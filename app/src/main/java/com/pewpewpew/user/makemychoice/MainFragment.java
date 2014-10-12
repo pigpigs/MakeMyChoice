@@ -67,24 +67,35 @@ public class MainFragment extends Fragment {
             addNewData();
             return true;
         }else if (id == R.id.action_sortOptions){
+            // TODO - Reload data once option changes!
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.sort_dialogue_title)
                     .setItems(R.array.sort_options,new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int pos) {
+                            Log.i(TAG,"Current sort mode: "+sortMode);
                             if(pos == 0){
                                 // Sort by Top
                                 mSharedPreferences.edit()
                                         .putString(getActivity().getString(R.string.pref_sort_mode),"top")
                                         .apply();
-                                sortMode = "top";
-                                Log.i(TAG, "Sort by Top");
+                                if (!sortMode.equals("top")) {
+                                    sortMode = "top";
+                                    mAdapter.loadObjects(); //refresh??
+                                }
+//                                Log.i(TAG, "Sort by Top");
                             }else if(pos==1){
-                                sortMode = "new";
+
                                 mSharedPreferences.edit()
-                                        .putString(getActivity().getString(R.string.pref_sort_mode),sortMode)
+                                        .putString(getActivity().getString(R.string.pref_sort_mode),"new")
                                         .apply();
-                                Log.i(TAG, "Sort by New");
+                                if (!sortMode.equals("new")) {
+
+                                    sortMode = "new";
+                                    mAdapter.loadObjects(); //refresh??
+
+                                }
+//                                Log.i(TAG, "Sort by New");
                             }else{
                                 Log.i(TAG, "Sort by Hot (Not implemented)");
                             }
@@ -92,6 +103,11 @@ public class MainFragment extends Fragment {
                     });
             AlertDialog dialog = builder.create();
             dialog.show();
+
+        }else if (id == R.id.action_newPost){
+            // Start Intent to CreateActivity/PostActivity
+            Intent intent = new Intent(getActivity(),PostActivity.class);
+            startActivity(intent);
 
         }
         return super.onOptionsItemSelected(item);
@@ -131,10 +147,16 @@ public class MainFragment extends Fragment {
             public ParseQuery<ParseObject> create() {
                 ParseQuery<ParseObject> query = new ParseQuery("Post");
 
-                query.orderByDescending("createdAt");
-                // TODO - Order by points, where datetime <= 5 days ago
+                // Not putting datetime constraints for now, since data is planned to be released after
+                // a week or so, unless user feedback says otherwise.
+                Log.i(TAG, "Changing sort mode...");
+                if (sortMode == "new"){
+                    query.orderByDescending("createdAt");
+                }else if(sortMode == "top"){
+                    query.orderByDescending("points");
+                }
 
-                // TODO- delete posts older than 5 days
+                // TODO- delete posts older than 5 days (do this everytime we save? or just run it every day manually..)
                 return query;
             }
         };

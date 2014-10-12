@@ -10,4 +10,6 @@
     <string name="sort_dialogue_title">Sort Options</string>
     <string name="pref_sort_mode">pref_sort_mode</string>
     <string name="pref_sort_mode_default">top</string>
+    <string name="action_submit">Submit Post</string>
+    <string name="title_hint">TItle</string>
 </resources>
