@@ -19,17 +19,21 @@ public class Utility {
 //        Log.i(TAG, "Time Since: "+timeSinceInSecs);
         if (timeSinceInSecs <=60){
             return "a minute ago";
-        }else if(timeSinceInSecs <= 60*5){
-            return "5 minutes ago";
-        }else if(timeSinceInSecs <= 60*30){
-            return "30 minutes ago";
-        }else if(timeSinceInSecs <= 60*60*23){
+        }else if(timeSinceInSecs < 60*60){
+            int mins = (int) timeSinceInSecs/60;
+            return mins+" minutes ago";
+        }else if(timeSinceInSecs < 60*60*2){
+            // Less than 2 hours, just return 1 hour
+            return "an hour ago";
+        }else if(timeSinceInSecs < 60*60*24){
             //Less than a day ago, return number of hours
             int hours = (int) timeSinceInSecs/(60*60);
-            return hours+" hour(s) ago";
+            return hours+" hours ago";
+        }else if(timeSinceInSecs < 60*60*24*2){
+            return "yesterday";
         }else{
             int days = (int) timeSinceInSecs / (24*60*60);
-            return days+" day(s) ago";
+            return days+" days ago";
         }
 
     }

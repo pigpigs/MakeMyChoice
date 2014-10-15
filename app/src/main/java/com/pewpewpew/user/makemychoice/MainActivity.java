@@ -25,13 +25,13 @@ import org.w3c.dom.Text;
 
 
 public class MainActivity extends ActionBarActivity {
-    static String PARSE_APPLICATION_ID = "bUeHCuWuE5uOmvq8zNoBHQnyPKgmiwydAgCyPJmb";
-    static String PARSE_CLIENT_KEY = "iyWexA1bv6ntSDuCejd3KNj7uweNAKzWFC6UdN5c";
+//    static String PARSE_APPLICATION_ID = "bUeHCuWuE5uOmvq8zNoBHQnyPKgmiwydAgCyPJmb";
+//    static String PARSE_CLIENT_KEY = "iyWexA1bv6ntSDuCejd3KNj7uweNAKzWFC6UdN5c";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
+//        Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()

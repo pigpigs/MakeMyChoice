@@ -3,6 +3,7 @@ package com.pewpewpew.user.makemychoice;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -92,6 +93,10 @@ public class PostActivity extends ActionBarActivity {
                         newPost.put("mainBody",bodyStr);
                     }
                     newPost.saveInBackground();
+                    Toast.makeText(this,"Post submitted!",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(this,MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
                 }
             default:
                 return super.onOptionsItemSelected(item);

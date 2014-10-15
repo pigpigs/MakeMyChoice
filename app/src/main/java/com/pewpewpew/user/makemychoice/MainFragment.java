@@ -34,7 +34,7 @@ import java.util.Random;
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
     public static final String KEY_POST_TITLE = "post_title_key";
-    private ParseQueryAdapter<ParseObject> mAdapter;
+    private ParseQueryAdapter<Post> mAdapter;
     SharedPreferences mSharedPreferences;
     private static String sortMode;
     public MainFragment(){
@@ -46,7 +46,6 @@ public class MainFragment extends Fragment {
         setHasOptionsMenu(true);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sortMode = mSharedPreferences.getString(getActivity().getString(R.string.pref_sort_mode),getActivity().getString(R.string.pref_sort_mode_default));
-        Log.i(TAG, sortMode);
         super.onCreate(savedInstanceState);
     }
 
@@ -80,21 +79,15 @@ public class MainFragment extends Fragment {
                                         .apply();
                                 if (!sortMode.equals("top")) {
                                     sortMode = "top";
-                                    mAdapter.loadObjects(); //refresh??
                                 }
-//                                Log.i(TAG, "Sort by Top");
                             }else if(pos==1){
-
                                 mSharedPreferences.edit()
                                         .putString(getActivity().getString(R.string.pref_sort_mode),"new")
                                         .apply();
                                 if (!sortMode.equals("new")) {
-
                                     sortMode = "new";
-                                    mAdapter.loadObjects(); //refresh??
-
+                                    mAdapter.loadObjects();
                                 }
-//                                Log.i(TAG, "Sort by New");
                             }else{
                                 Log.i(TAG, "Sort by Hot (Not implemented)");
                             }
@@ -104,10 +97,11 @@ public class MainFragment extends Fragment {
             dialog.show();
 
         }else if (id == R.id.action_newPost){
-            // Start Intent to CreateActivity/PostActivity
             Intent intent = new Intent(getActivity(),PostActivity.class);
             startActivity(intent);
 
+        }else if (id == R.id.action_refresh){
+            mAdapter.loadObjects();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,14 +115,14 @@ public class MainFragment extends Fragment {
         };
         Random numGen = new Random(); // only instantiate once to prevent reseeding??
         int idx = numGen.nextInt(sampleData.length); //nextInt is exclusive of topvalue, add 1 to make it inclusive
+        //
+        Post newPost = new Post();
+        newPost.setTitle(sampleData[idx]);
 
-        ParseObject newPost = new ParseObject("Post");
-        newPost.put("title", sampleData[idx]);
         int samplePoints=numGen.nextInt(1338);
-        newPost.put("points", samplePoints );
+        newPost.setPoints(samplePoints);
         Log.i(TAG,"New Data: "+sampleData[idx]+" - "+ samplePoints);
         newPost.saveInBackground();
-//        mAdapter.notifyDataSetChanged();
 
     }
 
@@ -141,11 +135,12 @@ public class MainFragment extends Fragment {
 
         ListView listView = (ListView) view.findViewById(R.id.listView_main);
 
-        ParseQueryAdapter.QueryFactory<ParseObject> factory = new ParseQueryAdapter.QueryFactory<ParseObject>() {
+        ParseQueryAdapter.QueryFactory<Post> factory = new ParseQueryAdapter.QueryFactory<Post>() {
             @Override
-            public ParseQuery<ParseObject> create() {
-                ParseQuery<ParseObject> query = new ParseQuery("Post");
+            public ParseQuery<Post> create() {
+                ParseQuery<Post> query = ParseQuery.getQuery(Post.class);
 
+                //TODO - change query methods based on which activity it's in, use switch case or wtv, or maybe just implement diff adapters for those activities
                 // Not putting datetime constraints for now, since data is planned to be released after
                 // a week or so, unless user feedback says otherwise.
                 Log.i(TAG, "Changing sort mode...");
@@ -159,16 +154,15 @@ public class MainFragment extends Fragment {
                 return query;
             }
         };
-        mAdapter = new ParseQueryAdapter<ParseObject>(getActivity(), factory){
+        mAdapter = new ParseQueryAdapter<Post>(getActivity(), factory){
             @Override
-            public View getItemView(ParseObject post, View v, ViewGroup parent) {
+            public View getItemView(Post post, View v, ViewGroup parent) {
 
                 if (v == null){
                     v= View.inflate(getContext(),R.layout.list_post_item, null);
                 }
 
-                ((TextView)v.findViewById(R.id.post_title)).setText(post.getString("title"));
-                // TODO - Check for titles that are too big, truncate and add ...more to the end
+                ((TextView)v.findViewById(R.id.post_title)).setText(post.getTitle());
 
                 TextView postData = (TextView)v.findViewById(R.id.post_data);
                 // Get timeSince, numComments and numPoints for post data
@@ -176,11 +170,12 @@ public class MainFragment extends Fragment {
                 String timeSince = Utility.getTimeSince(post.getCreatedAt());
 
                 // Upvotes on post
-                // Have to start thinking about how to avoid same person from upvoting one post multiple times
-                String points = String.valueOf(post.getInt("points"));
+                // Use increment for synchronization
+                String points = String.valueOf(post.getPoints());
+
                 //Number of comments, use increment on the field every time there is a new post
                 // TODO- implement numComments
-                String numComments = String.valueOf(post.getInt("numComments"));
+                String numComments = "0";
 
                 postData.setText(String.format(
                         getString(R.string.format_post_data) , // String format from xml
@@ -197,11 +192,11 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
-                // TODO- Put extras to display
                 // Pass in post ID here to retrieve anything extra
                 ParseQueryAdapter adapter = (ParseQueryAdapter) adapterView.getAdapter();
-                ParseObject post = adapter.getItem(i);
-                String title = post.getString("title");
+                Post post = (Post)adapter.getItem(i);
+                // maybe just bundle in the whole Post object to the detail fragment.
+                String title = post.getTitle();
                 intent.putExtra(KEY_POST_TITLE,title);
                 startActivity(intent);
             }

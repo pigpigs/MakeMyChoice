@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <!-- Test option to make new post data-->
     <item
         android:id="@+id/action_addData"
@@ -14,6 +15,12 @@
         android:id="@+id/action_newPost"
         android:title="New Post"
 
+        />
+    <item
+        android:id="@+id/action_refresh"
+        android:title="Refresh"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_action_refresh"
         />
 
 </menu>
