@@ -1,6 +1,7 @@
 package com.pewpewpew.user.makemychoice;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -34,6 +35,7 @@ import java.util.Random;
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
     public static final String KEY_POST_TITLE = "post_title_key";
+    private static final int REQUEST_NEW_POST = 88;
     private ParseQueryAdapter<Post> mAdapter;
     SharedPreferences mSharedPreferences;
     private static String sortMode;
@@ -98,7 +100,8 @@ public class MainFragment extends Fragment {
 
         }else if (id == R.id.action_newPost){
             Intent intent = new Intent(getActivity(),PostActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent,REQUEST_NEW_POST);
+
 
         }else if (id == R.id.action_refresh){
             mAdapter.loadObjects();
@@ -143,7 +146,6 @@ public class MainFragment extends Fragment {
                 //TODO - change query methods based on which activity it's in, use switch case or wtv, or maybe just implement diff adapters for those activities
                 // Not putting datetime constraints for now, since data is planned to be released after
                 // a week or so, unless user feedback says otherwise.
-                Log.i(TAG, "Changing sort mode...");
                 if (sortMode.equals("new")){
                     query.orderByDescending("createdAt");
                 }else if(sortMode.equals("top")){
@@ -198,9 +200,24 @@ public class MainFragment extends Fragment {
                 // maybe just bundle in the whole Post object to the detail fragment.
                 String title = post.getTitle();
                 intent.putExtra(KEY_POST_TITLE,title);
+
                 startActivity(intent);
             }
         });
         return view; //return own view here
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_NEW_POST){
+            if( resultCode == Activity.RESULT_OK){
+                Log.i(TAG, "Result received successfully.");
+                mAdapter.loadObjects();
+            }else{
+                Log.i(TAG,"User cancelled.");
+            }
+        }else{
+            Log.i(TAG, "Incorrect request code. This shouldn't happen at all.");
+        }
     }
 }

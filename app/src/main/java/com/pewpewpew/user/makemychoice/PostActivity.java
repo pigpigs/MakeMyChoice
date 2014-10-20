@@ -54,13 +54,15 @@ public class PostActivity extends ActionBarActivity {
     public void onBackPressed() {
         String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
         String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
-        if(! (titleStr==null) || !(bodyStr == null)){
+        if( (titleStr!=null) || (bodyStr != null) ){
             new AlertDialog.Builder(this)
                     .setMessage("Are you sure you want to exit?")
                     .setCancelable(false)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            PostActivity.super.onBackPressed();
+                            setResult(RESULT_CANCELED);
+                            finish();
+//                            PostActivity.super.onBackPressed();
                         }
                     })
                     .setNegativeButton("No",null)
@@ -78,25 +80,32 @@ public class PostActivity extends ActionBarActivity {
                 String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
                 titleStr = titleStr.replace("\n","");
                 Log.i(TAG, titleStr);
+                // Check title string length constraints
                 if (titleStr.length() == 0){
                     Toast.makeText(this,"Please enter a title.",Toast.LENGTH_SHORT).show();
                 }else if(titleStr.length() > 150){
                     Toast.makeText(this,"Title can have maximum of 150 characters. You have "+titleStr.length()+".",Toast.LENGTH_SHORT).show();
                 }else{
-                    ParseObject newPost = new ParseObject("Post");
-                    newPost.put("title", titleStr);
+
+
+                    Post newPost = new Post();
+                    newPost.setTitle(titleStr);
                     Log.i(TAG,"New Data: "+titleStr);
 
                     String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
                     if (bodyStr!=null){
                         Log.i(TAG,"Body: "+bodyStr);
-                        newPost.put("mainBody",bodyStr);
+                        newPost.setBody(bodyStr);
                     }
                     newPost.saveInBackground();
+
+                    // Set result
                     Toast.makeText(this,"Post submitted!",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(this,MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    setResult(RESULT_OK);
+                    finish();
+//                    Intent intent = new Intent(this,MainActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
                 }
             default:
                 return super.onOptionsItemSelected(item);
