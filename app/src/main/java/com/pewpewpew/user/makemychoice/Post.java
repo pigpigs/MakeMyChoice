@@ -1,6 +1,8 @@
 package com.pewpewpew.user.makemychoice;
 
+import com.parse.Parse;
 import com.parse.ParseClassName;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 
 /**
@@ -12,6 +14,9 @@ public class Post extends ParseObject{
     private String POST_TITLE = "title";
     private String POST_BODY = "mainBody";
     private String POST_POINTS = "points";
+    private String POST_IMAGE = "image";
+
+    // Constructor must be empty to avoid ruining anything
     public Post(){
 
     }
@@ -40,5 +45,13 @@ public class Post extends ParseObject{
 
     public void setPoints(int points){
         put(POST_POINTS, points);
+    }
+
+    public void setImage(byte[] data){
+        ParseFile file = new ParseFile("post_image.jpg",data);
+        put(POST_IMAGE, file);
+    }
+    public ParseFile getImage(){
+        return getParseFile(POST_IMAGE);
     }
 }

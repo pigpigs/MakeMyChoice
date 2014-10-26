@@ -193,6 +193,7 @@ public class MainFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
                 // Pass in post ID here to retrieve anything extra
                 ParseQueryAdapter adapter = (ParseQueryAdapter) adapterView.getAdapter();

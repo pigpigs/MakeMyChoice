@@ -2,8 +2,14 @@ package com.pewpewpew.user.makemychoice;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -15,17 +21,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseFile;
 import com.parse.ParseObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Created by User on 12/10/14.
  */
-public class PostActivity extends ActionBarActivity {
+public class PostActivity extends ActionBarActivity implements PostFragment.Callback{
     private static final String TAG = "PostActivity_debug";
+
+    private static String mImagePath;
+
     // Activity where user submits content. Inflate a different fragment depending on Image Post or
     // Text Post
     // 1) ActionBar with submit action, confirms whether the user wants to discard the message when exiting
@@ -44,7 +63,7 @@ public class PostActivity extends ActionBarActivity {
         setContentView(R.layout.activity_post);
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.post_container, new TextPostFragment())
+                    .add(R.id.post_container, new PostFragment())
                     .commit();
         }
 
@@ -97,15 +116,22 @@ public class PostActivity extends ActionBarActivity {
                         Log.i(TAG,"Body: "+bodyStr);
                         newPost.setBody(bodyStr);
                     }
+
+                    // Save the Image
+
+                    Bitmap bmp = BitmapFactory.decodeFile(mImagePath);
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                    byte[] data = stream.toByteArray();
+                    newPost.setImage(data);
+
                     newPost.saveInBackground();
 
                     // Set result
                     Toast.makeText(this,"Post submitted!",Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
-//                    Intent intent = new Intent(this,MainActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
+
                 }
             default:
                 return super.onOptionsItemSelected(item);
@@ -120,13 +146,11 @@ public class PostActivity extends ActionBarActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    public static class TextPostFragment extends Fragment{
-        public TextPostFragment(){}
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View v = inflater.inflate(R.layout.fragment_text_post, container, false);
-            return v;
-        }
+    @Override
+    public void onImageCreated(String imagePath) {
+        mImagePath = imagePath;
+        Log.i(TAG, "Image Created Callback: "+imagePath);
     }
+
+
 }

@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    >
+    android:padding="8dp">
 
 
     <EditText
@@ -21,7 +21,7 @@
         android:gravity="left|top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textCapWords|textAutoCorrect|textMultiLine"
+        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
         android:ems="10"
         android:id="@+id/post_mainBody_editText"
         android:hint="@string/body_hint"
@@ -30,4 +30,17 @@
         android:lines="7"
         android:scrollbars="vertical"
         />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:visibility="gone"
+        android:id="@+id/post_image" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Take a picture"
+        android:id="@+id/button_take_picture"
+        android:layout_gravity="center_horizontal" />
 </LinearLayout>
