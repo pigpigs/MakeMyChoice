@@ -35,6 +35,7 @@ import java.util.Random;
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
     public static final String KEY_POST_TITLE = "post_title_key";
+    public static final String KEY_POST_ID = "post_id";
     private static final int REQUEST_NEW_POST = 88;
     private ParseQueryAdapter<Post> mAdapter;
     SharedPreferences mSharedPreferences;
@@ -198,9 +199,11 @@ public class MainFragment extends Fragment {
                 // Pass in post ID here to retrieve anything extra
                 ParseQueryAdapter adapter = (ParseQueryAdapter) adapterView.getAdapter();
                 Post post = (Post)adapter.getItem(i);
-                // maybe just bundle in the whole Post object to the detail fragment.
-                String title = post.getTitle();
-                intent.putExtra(KEY_POST_TITLE,title);
+
+//                String title = post.getTitle();
+//                intent.putExtra(KEY_POST_TITLE,title);
+
+                intent.putExtra(KEY_POST_ID , post.getObjectId());
 
                 startActivity(intent);
             }

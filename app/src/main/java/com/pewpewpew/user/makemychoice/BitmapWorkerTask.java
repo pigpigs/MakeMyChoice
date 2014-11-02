@@ -2,12 +2,15 @@ package com.pewpewpew.user.makemychoice;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import java.io.File;
+import java.io.IOException;
+
 
 /**
  * Created by User on 26/10/14.
@@ -20,32 +23,33 @@ public class BitmapWorkerTask extends AsyncTask<Void, Void, Bitmap> {
         mCurrentPhotoPath = path;
         mImageView = iv;
     }
+
     @Override
     protected Bitmap doInBackground(Void... voids) {
+        Log.i(TAG,"BitmapWorkerTask initialized.");
 
         int reqWidth = mImageView.getWidth();
         int reqHeight = mImageView.getHeight();
+
         //Decode and scale image
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mCurrentPhotoPath, options);
-//        int imageHeight = options.outHeight;
-//        int imageWidth = options.outWidth;
+
         options.inSampleSize = calculateInSampleSize(options,reqWidth, reqHeight);
         options.inJustDecodeBounds = false;
-
-
         Bitmap imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath,options);
+        // TODO - Change scaletype of imageview for larger/smaller devices?
 
-
-        //TODO -ROTATE IMAGE TO PORTRAIT
         return imageBitmap;
     }
 
     @Override
     protected void onPostExecute(Bitmap imageBitmap) {
+        Log.i(TAG, "Setting image bitmap.");
         mImageView.setVisibility(View.VISIBLE);
         mImageView.setImageBitmap(imageBitmap);
+
     }
 
     public static int calculateInSampleSize(

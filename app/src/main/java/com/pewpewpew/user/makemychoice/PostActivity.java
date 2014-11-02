@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -105,33 +106,33 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
                 }else if(titleStr.length() > 150){
                     Toast.makeText(this,"Title can have maximum of 150 characters. You have "+titleStr.length()+".",Toast.LENGTH_SHORT).show();
                 }else{
-
-
+                    // TODO- make the whole saving thing an asynctask that then runs saveeventually on the parse object, mainly to prevent bitmap lagging up
+                    // Make a new Post object
                     Post newPost = new Post();
                     newPost.setTitle(titleStr);
-                    Log.i(TAG,"New Data: "+titleStr);
 
                     String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
                     if (bodyStr!=null){
-                        Log.i(TAG,"Body: "+bodyStr);
                         newPost.setBody(bodyStr);
                     }
 
-                    // Save the Image
+                    // Save the Image if there is one
+                    if (mImagePath!=null) {
+                        //Decode and scale image
+                        Bitmap bmp = Utility.makeParseBitmap(mImagePath);
 
-                    Bitmap bmp = BitmapFactory.decodeFile(mImagePath);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                    byte[] data = stream.toByteArray();
-                    newPost.setImage(data);
+                        // Output bitmap and save to server
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] data = stream.toByteArray();
+                        newPost.setImage(data);
+                        newPost.saveInBackground();
 
-                    newPost.saveInBackground();
-
-                    // Set result
-                    Toast.makeText(this,"Post submitted!",Toast.LENGTH_SHORT).show();
-                    setResult(RESULT_OK);
-                    finish();
-
+                        // Set result
+                        Toast.makeText(this, "Post submitted!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+                    }
                 }
             default:
                 return super.onOptionsItemSelected(item);

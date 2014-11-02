@@ -37,6 +37,8 @@ public class PostFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                ImageView postImageView= (ImageView) getActivity().findViewById(R.id.post_image);
+//                postImageView.setVisibility(View.INVISIBLE);
                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (cameraIntent.resolveActivity(getActivity().getPackageManager())!=null){
                     // Create the File where the photo should go
@@ -66,14 +68,25 @@ public class PostFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE){
             if (resultCode == Activity.RESULT_OK){
-                // TODO - Rotate and re-save file into portrait
+                // TODO - Rotate and re-save file into portrait (if this takes off, for performance) The best solution will be to override the camera taking process and rotate it upon saving
                 if(mCurrentPhotoPath!=null){
+                    final ImageView postImageView= (ImageView) getActivity().findViewById(R.id.post_image);
+                    postImageView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                        // Ensure the view has enough time to change before BitmapWorkerTask runs!
+                        @Override
+                        public void onLayoutChange(View view, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
+                            postImageView.removeOnLayoutChangeListener(this);
+                            Log.e(TAG, "W:" + postImageView.getWidth() + " H:"+postImageView.getHeight());
+                            ((Callback) getActivity()).onImageCreated(mCurrentPhotoPath);
+                            BitmapWorkerTask task = new BitmapWorkerTask(mCurrentPhotoPath,postImageView);
+                            task.execute();
+                        }
+                    });
+                    // Set it as visible to take up necessary space for bitmap computation
+                    postImageView.setVisibility(View.INVISIBLE);
+
                     //TODO - Implement cache clearing if this takes off!
-                    Log.i(TAG, "Image File: "+mCurrentPhotoPath);
-                    ((Callback) getActivity()).onImageCreated(mCurrentPhotoPath);
-                    ImageView postImageView= (ImageView) getActivity().findViewById(R.id.post_image);
-                    BitmapWorkerTask task = new BitmapWorkerTask(mCurrentPhotoPath,postImageView);
-                    task.execute();
+
                 }
             }
         }
