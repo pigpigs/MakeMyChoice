@@ -55,8 +55,8 @@ public class Utility {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(mImagePath,options);
-        int curWidth = options.outWidth;
-        int curHeight = options.outHeight;
+//        int curWidth = options.outWidth;
+//        int curHeight = options.outHeight;
 //        Log.i(TAG, "Dimensions (Source): " + curWidth + " X " + curHeight);
         //TODO - Consider using device width + set height instead?
         options.inSampleSize = BitmapWorkerTask.calculateInSampleSize(options,1032, 600);

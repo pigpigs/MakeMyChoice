@@ -75,6 +75,7 @@ public class PostFragment extends Fragment {
                         // Ensure the view has enough time to change before BitmapWorkerTask runs!
                         @Override
                         public void onLayoutChange(View view, int i, int i2, int i3, int i4, int i5, int i6, int i7, int i8) {
+                            // NOTE - this might not work on some devices, have to double check
                             postImageView.removeOnLayoutChangeListener(this);
                             Log.e(TAG, "W:" + postImageView.getWidth() + " H:"+postImageView.getHeight());
                             ((Callback) getActivity()).onImageCreated(mCurrentPhotoPath);

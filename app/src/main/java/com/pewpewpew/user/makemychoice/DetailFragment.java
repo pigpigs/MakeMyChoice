@@ -1,16 +1,20 @@
 package com.pewpewpew.user.makemychoice;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +31,7 @@ import com.parse.ParseObject;
  */
 public class DetailFragment  extends Fragment{
     private static final String TAG = "DetailFragment_debug";
+    private static final int REQUEST_REPLY = 101;
     private Post mPost;
     public DetailFragment(){}
 
@@ -39,7 +44,7 @@ public class DetailFragment  extends Fragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Intent intent = getActivity().getIntent();
-        String postId = intent.getStringExtra(MainFragment.KEY_POST_ID);
+        final String postId = intent.getStringExtra(MainFragment.KEY_POST_ID);
         Post post = ParseObject.createWithoutData(Post.class, postId);
 //        Log.i(TAG, ""+post.isDataAvailable());
         final View v = inflater.inflate(R.layout.fragment_detail, container, false);
@@ -65,8 +70,10 @@ public class DetailFragment  extends Fragment{
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                // FIXME -  Instead of this create a new fragment programmatically with a parseimageview
                                 // Click to show high res view
                                 toggleVisibility();
+
                             }
                         });
                         imageView.loadInBackground(new GetDataCallback() {
@@ -82,6 +89,13 @@ public class DetailFragment  extends Fragment{
                     String postBody = thisPost.getBody();
                     TextView bodyTextView = (TextView) v.findViewById(R.id.post_body);
                     bodyTextView.setText(postBody);
+                    ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
+                    replyButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            replyToPost(postId); // the argument is currently useless, considering whether should implement another method for replying to comment
+                        }
+                    });
 
                 }else{
                     Log.i(TAG, "Parse Exception");
@@ -93,6 +107,45 @@ public class DetailFragment  extends Fragment{
 
         return v;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            // Comment saving implemented here because we need the reference to post
+        Log.i(TAG, "wassap");
+        if(requestCode == REQUEST_REPLY){
+            if(resultCode == Activity.RESULT_OK){
+                String commentBody = data.getStringExtra(CommentDialogFragment.KEY_REPLY);
+                Log.i(TAG, "Reply received: " + commentBody);
+                Comment newComment = new Comment();
+                newComment.setBody(commentBody);
+                newComment.setPost(mPost);
+                newComment.saveInBackground();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * Lazy method to create dialog fragment for replying
+     *
+     * Copy paste this method when implementing comment replying
+     * @param postId
+     */
+    private void replyToPost(String postId) {
+
+        CommentDialogFragment fragment = new CommentDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(CommentDialogFragment.KEY_REPLY,postId);
+        // Set Args for fragment and commit
+        fragment.setArguments(bundle);
+        fragment.setTargetFragment(this, REQUEST_REPLY);
+        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+
+        fragment.show(ft, "CommentDialogFragment");
+//        ft.add(R.id.detail_container,fragment)
+//                .commit();
+    }
+
     public void toggleVisibility(){
         LinearLayout container = (LinearLayout) getActivity().findViewById(R.id.expanded_image_container);
 
@@ -108,7 +161,7 @@ public class DetailFragment  extends Fragment{
                         toggleVisibility();
                     }
                 });
-                // TODO - Set on touch listener to do zooming and stuff?
+                // TODO - Set on touch listener to do zooming and stuff? find out how it's normally done
 //                parseImageView.setOnTouchListener(new View.OnTouchListener() {
 //                    @Override
 //                    public boolean onTouch(View view, MotionEvent motionEvent) {

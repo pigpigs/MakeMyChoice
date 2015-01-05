@@ -15,4 +15,6 @@
     <string name="title_string">Title</string>
     <string name="body_string">More Info (Optional)</string>
     <string name="body_hint">More about your dilemma here! (Optional)</string>
+    <string name="fragment_dialog_reply">Reply</string>
+    <string name="fragment_dialog_cancel">Cancel</string>
 </resources>

@@ -16,6 +16,7 @@ public class Post extends ParseObject{
     private String POST_POINTS = "points";
     private String POST_IMAGE = "image";
 
+
     // Constructor must be empty to avoid ruining anything
     public Post(){
 
