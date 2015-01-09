@@ -231,4 +231,17 @@ public class DetailFragment  extends Fragment{
             // Unload image??
         }
     }
+
+    // for PagerAdapter, not sure if needed but wtv
+    public static Fragment newInstance(int i) {
+        DetailFragment f = new DetailFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putInt("num", i);
+        f.setArguments(args);
+
+
+        return f;
+    }
 }
