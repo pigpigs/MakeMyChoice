@@ -21,8 +21,6 @@ public class DetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         // TODO- make container fragment, add detail fragment
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_detail);
 
         // ViewPager and its adapters use support library
