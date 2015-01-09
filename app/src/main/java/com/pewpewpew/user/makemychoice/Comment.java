@@ -17,6 +17,10 @@ public class Comment extends ParseObject {
 
     }
 
+    @Override
+    public String toString() {
+        return String.format("ParseObject.Comments: %s", getBody() );
+    }
 
     /**
      * @return String of COMMENT's body

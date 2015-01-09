@@ -21,7 +21,7 @@ public class CommentDialogFragment extends DialogFragment {
     public static String KEY_REPLY = "reply_key";
     private String mReplyTarget; // "Post or xxx's comment
     private Post mPost;
-    //test
+
     /**
      * DialogFragment that takes in the user it replies to as an argument and set "@ user" as the default text,
      * or replies to the main post
