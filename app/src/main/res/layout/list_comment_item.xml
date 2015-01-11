@@ -7,7 +7,9 @@
     android:minHeight="?android:listPreferredItemHeight"
     android:paddingLeft="12dp"
     android:paddingRight="12dp"
-    >
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:gravity="center_vertical">
 
 <!--
     <TextView
@@ -21,7 +23,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="JUST SKIP CLASS OP, NOTHING IN SCHL IS USEFUL ANYWAY"
         android:id="@+id/comment_body"
         android:textSize="16sp"
         android:typeface="serif"
@@ -32,7 +33,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textSize="12sp"
-        android:text="someuser | 3 days ago | SKIP CLASS AND PLAY"
         android:id="@+id/comment_meta" />
 
 </LinearLayout>

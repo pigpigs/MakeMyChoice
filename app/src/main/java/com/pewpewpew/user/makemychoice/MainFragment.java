@@ -32,6 +32,12 @@ import java.util.Random;
 /**
  * Created by User on 24/9/14.
  */
+
+/**
+ * Main Fragment hosting just a listview.
+ *
+ * Future - pager view with user's posts, favourites in another page, private/local options for posts eg open to friends only
+ */
 public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment_Debug";
     public static final String KEY_POST_TITLE = "post_title_key";

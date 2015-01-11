@@ -24,6 +24,12 @@ import java.util.Date;
 /**
  * Created by User on 27/10/14.
  */
+
+/**
+ *  Post fragment that lets users construct a new post.
+ *
+ *  Future - take more pictures? at least 2 for when the user needs to show images of multiple choices --> sliding gallery view? (like the css one)
+ */
 public class PostFragment extends Fragment {
     private String mCurrentPhotoPath; //bundle for config changes
     private final String TAG = "PostFragment_debug";

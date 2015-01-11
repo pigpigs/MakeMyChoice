@@ -3,64 +3,80 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="8dp">
+        android:paddingTop="8dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_title"
-            android:text="Post Title Here"
-            android:typeface="serif"
-            android:textSize="22sp"
-            android:layout_gravity="center_horizontal"
-            android:textStyle="bold"
-            android:paddingTop="3dp"
-            android:paddingBottom="3dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/post_title"
+                android:text="Post Title Here"
+                android:typeface="serif"
+                android:textSize="22sp"
+                android:layout_gravity="center_horizontal"
+                android:textStyle="bold"
+                android:paddingTop="3dp"
+                android:paddingBottom="3dp"
+
+                />
 
         <View
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/black"
-            android:id="@+id/divider1" />
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:id="@+id/divider1" />
 
         <com.parse.ParseImageView
-            android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:scaleType="centerCrop"
-            android:id="@+id/post_image"
-            android:layout_marginBottom="3dp"
-            android:layout_marginTop="3dp" />
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:id="@+id/post_image"
+                android:layout_marginBottom="3dp"
+                android:layout_marginTop="3dp" />
 
         <View
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/black"
-            android:id="@+id/divider2" />
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/black"
+                android:id="@+id/divider2" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/post_body"
-            android:text="Post Body Here"
-            android:textSize="15sp"
-            android:typeface="serif"
-            android:padding="8dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/post_body"
+                android:text="Post Body Here"
+                android:textSize="15sp"
+                android:typeface="serif"
+                android:padding="8dp" />
+    </LinearLayout>
+
+    <!--
         <View
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="1dp"
             android:background="@color/black"
-            android:id="@+id/divider3" />
+            android:id="@+id/divider3"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"/>
+            -->
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/button_bar"
-            android:gravity="center_horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:background="#c8c8c8"
             android:paddingTop="8dp"
+
             android:paddingBottom="8dp">
 
             <ImageButton
@@ -68,6 +84,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_reply"
                 android:src="@drawable/ic_action_reply"
+                android:background="#c8c8c8"
                 android:layout_weight="1" />
 
             <ImageButton
@@ -75,6 +92,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_heart"
                 android:src="@drawable/ic_action_favorite"
+                android:background="#c8c8c8"
                 android:layout_weight="1" />
 
             <ImageButton
@@ -82,6 +100,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_report"
                 android:src="@drawable/ic_action_error"
+                android:background="#c8c8c8"
                 android:layout_weight="1" />
 
         </LinearLayout>

@@ -1,28 +1,24 @@
 package com.pewpewpew.user.makemychoice;
 
+/**
+ * Created by User on 11/1/15.
+ */
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -31,25 +27,21 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
-import com.parse.ParseUser;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
- * Created by User on 04/10/14.
- */
-
-/**
- * Detail of the post.
+ * The outcome fragment will currently use the same layout as the DetailFragment.
  *
- * Future - Edit option for users, better looking comments
+ * TODO
+ * 1) Make outcome parse class, link to comments
+ *
+ * Future - polls
  */
-public class DetailFragment  extends Fragment{
-    private static final String TAG = "DetailFragment_debug";
+public class OutcomeFragment extends Fragment {
+
+    private static final String TAG = "OutcomeFragment_debug";
     private static final int REQUEST_REPLY = 101;
     private Post mPost;
-    public DetailFragment(){}
+    public OutcomeFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,8 +54,8 @@ public class DetailFragment  extends Fragment{
         Intent intent = getActivity().getIntent();
         final String postId = intent.getStringExtra(MainFragment.KEY_POST_ID);
         Post post = ParseObject.createWithoutData(Post.class, postId);
-//        Log.i(TAG, ""+post.isDataAvailable());
-        // note- now using the test layout that contains a listview with headerview for the scrolling issue
+
+
         final View v = inflater.inflate(R.layout.fragment_detail_test, container, false);
         ListView listView = (ListView) v.findViewById(R.id.listView_comments);
         //FIXME - figure out what the root param is supposed to be here
@@ -71,6 +63,7 @@ public class DetailFragment  extends Fragment{
         listView.addHeaderView(headerView);
         // TODO - find out how to inflate the views faster, maybe pass in the post title  straight? load faster? WHY IS PARSE SO SLOW
         // note- its not the image that slows it down, might need to prefetch or something, or maybe datastore will be enough
+        // note - datastore all the text
 
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
             @Override
@@ -79,39 +72,38 @@ public class DetailFragment  extends Fragment{
                     mPost = thisPost; // handle for post to get post data somewhere
 
                     //Get title
-                    String postTitle = thisPost.getTitle();
+                    String postTitle = "[OUTCOME] " + thisPost.getTitle();
                     TextView titleTextView = (TextView) v.findViewById(R.id.post_title);
-//                    Log.i(TAG, "Title: "+postTitle);
                     titleTextView.setText(postTitle);
 
-                    // Get image
-                    ParseFile parseFile = thisPost.getImage();
-
-                    if(parseFile== null){
-                        Log.i(TAG, "No image!");
-                    }else{
-                        ParseImageView imageView = (ParseImageView) v.findViewById(R.id.post_image);
-                        imageView.setParseFile(thisPost.getImage());
-                        imageView.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                // FIXME -  Instead of this create a new fragment with a parseimageview programmatically
-                                // Click to show high res view
-                                toggleVisibility();
-
-                            }
-                        });
-                        imageView.loadInBackground(new GetDataCallback() {
-                            @Override
-                            public void done(byte[] bytes, ParseException e) {
-                                Log.i(TAG, "Image Loaded!");
-                            }
-                        });
-                    }
+                    // TODO - load outcome image if any
+//                    // Get image
+//                    ParseFile parseFile = thisPost.getImage();
+//                    if(parseFile== null){
+//                        Log.i(TAG, "No image!");
+//                    }else{
+//                        ParseImageView imageView = (ParseImageView) v.findViewById(R.id.post_image);
+//                        imageView.setParseFile(thisPost.getImage());
+//                        imageView.setOnClickListener(new View.OnClickListener() {
+//                            @Override
+//                            public void onClick(View view) {
+//                                // FIXME -  Instead of this create a new fragment with a parseimageview programmatically
+//                                // Click to show high res view
+//                                toggleVisibility();
+//
+//                            }
+//                        });
+//                        imageView.loadInBackground(new GetDataCallback() {
+//                            @Override
+//                            public void done(byte[] bytes, ParseException e) {
+//                                Log.i(TAG, "Image Loaded!");
+//                            }
+//                        });
+//                    }
 
                     //Get post body
                     // TODO-  trim post body down to max of a few lines/ characters, click to expand,
-                    String postBody = thisPost.getBody();
+                    String postBody = "Outcome Body Here";
                     TextView bodyTextView = (TextView) v.findViewById(R.id.post_body);
                     bodyTextView.setText(postBody);
                     ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
@@ -134,6 +126,7 @@ public class DetailFragment  extends Fragment{
                             return query;
                         }
                     };
+
                     // FUTURE- Posts to have polls for the choices, comments will indicate which choice the user chose
                     ParseQueryAdapter<Comment> commentsAdapter =
                             new ParseQueryAdapter<Comment>(getActivity(), factory){
@@ -153,21 +146,7 @@ public class DetailFragment  extends Fragment{
                                     return v;
                                 }
                             };
-                    commentsAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Comment>() {
-                        @Override
-                        public void onLoading() {
-                            // Trigger loading UI??
-                        }
 
-                        @Override
-                        public void onLoaded(List<Comment> comments, Exception e) {
-                            if(e == null){
-                                if(comments.size() == 0){
-                                    Toast.makeText(getActivity(),"No Comments", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    });
                     ((ListView) v.findViewById(R.id.listView_comments)).setAdapter(commentsAdapter);
                 }else{
                     Log.i(TAG, "Parse Exception");
@@ -183,7 +162,7 @@ public class DetailFragment  extends Fragment{
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            // Comment saving implemented here because we need the reference to post
+        // Comment saving implemented here because we need the reference to post
         if(requestCode == REQUEST_REPLY){
             if(resultCode == Activity.RESULT_OK){
                 String commentBody = data.getStringExtra(CommentDialogFragment.KEY_REPLY);
@@ -207,6 +186,7 @@ public class DetailFragment  extends Fragment{
 
         CommentDialogFragment fragment = new CommentDialogFragment();
         Bundle bundle = new Bundle();
+        // todo - change the postid to that of the outcome's?
         bundle.putString(CommentDialogFragment.KEY_REPLY,postId);
         // Set Args for fragment and commit
         fragment.setArguments(bundle);
@@ -256,7 +236,7 @@ public class DetailFragment  extends Fragment{
 
     // for PagerAdapter, not sure if needed but wtv
     public static Fragment newInstance(int i) {
-        DetailFragment f = new DetailFragment();
+        OutcomeFragment f = new OutcomeFragment();
 
         // Supply num input as an argument.
         Bundle args = new Bundle();

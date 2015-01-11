@@ -61,11 +61,9 @@ public class DetailActivity extends ActionBarActivity {
         public Fragment getItem(int i) {
             switch(i){
                 case 0:
-                    Log.i(TAG, "showing detailfragment");
                     return DetailFragment.newInstance(i);
                 case 1:
-                    Log.i(TAG, "showing detailfragment 2");
-                    return new Fragment();
+                    return OutcomeFragment.newInstance(i);
             }
             return null;
         }
