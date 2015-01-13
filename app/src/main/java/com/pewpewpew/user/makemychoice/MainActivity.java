@@ -32,6 +32,9 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
 
 //        Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
+
+        // Show a sign up activity unless user is authenticated, check using SharedPreferences
+
         setContentView(R.layout.activity_main);
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()

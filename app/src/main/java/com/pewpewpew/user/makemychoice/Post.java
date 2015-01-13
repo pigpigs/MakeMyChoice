@@ -1,6 +1,5 @@
 package com.pewpewpew.user.makemychoice;
 
-import com.parse.Parse;
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -11,6 +10,7 @@ import com.parse.ParseObject;
 
 @ParseClassName("Post")
 public class Post extends ParseObject{
+    private static final String POST_OUTCOME = "outcome";
     private String POST_TITLE = "title";
     private String POST_BODY = "mainBody";
     private String POST_POINTS = "points";
@@ -37,6 +37,8 @@ public class Post extends ParseObject{
         return getInt(POST_POINTS);
     }
 
+    public Outcome getOutcome(){return (Outcome) getParseObject(POST_OUTCOME);}
+
     public void setTitle(String title){
         put(POST_TITLE, title);
     }
@@ -47,6 +49,8 @@ public class Post extends ParseObject{
     public void setPoints(int points){
         put(POST_POINTS, points);
     }
+
+    public void setOutcome(Outcome outcome){put(POST_OUTCOME, outcome);}
 
     public void setImage(byte[] data){
         ParseFile file = new ParseFile("post_image.jpg",data);

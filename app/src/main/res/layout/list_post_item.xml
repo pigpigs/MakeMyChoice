@@ -22,7 +22,9 @@
             android:text="Should I punch this ugly looking robot on the left or burn it?"
             android:id="@+id/post_title"
             android:layout_gravity="center_vertical"
-            android:padding="8dp" />
+            android:padding="8dp"
+            android:ellipsize="end"
+            android:maxLines="5" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,18 +37,5 @@
 
 
     </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:id="@+id/imageHolder">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/imageView"
-            android:src="@drawable/ic_launcher"
-            android:layout_gravity="center_vertical" />
-    </FrameLayout>
 
 </LinearLayout>

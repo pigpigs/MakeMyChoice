@@ -78,6 +78,16 @@ public class DetailFragment  extends Fragment{
                 if(e == null) {
                     mPost = thisPost; // handle for post to get post data somewhere
 
+                    // Trigger a callback if there is an outcome for the current post
+                    Outcome outcome = thisPost.getOutcome();
+                    if(outcome != null){
+                        Log.i(TAG, "Post has outcome");
+                        OutcomeFragment.inflateViews(outcome.getObjectId());
+
+                    }else{
+                        Log.i(TAG, "no outcome");
+                    }
+
                     //Get title
                     String postTitle = thisPost.getTitle();
                     TextView titleTextView = (TextView) v.findViewById(R.id.post_title);
@@ -107,13 +117,14 @@ public class DetailFragment  extends Fragment{
                                 Log.i(TAG, "Image Loaded!");
                             }
                         });
+
                     }
 
                     //Get post body
-                    // TODO-  trim post body down to max of a few lines/ characters, click to expand,
                     String postBody = thisPost.getBody();
                     TextView bodyTextView = (TextView) v.findViewById(R.id.post_body);
                     bodyTextView.setText(postBody);
+
                     ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
                     replyButton.setOnClickListener(new View.OnClickListener() {
                         @Override

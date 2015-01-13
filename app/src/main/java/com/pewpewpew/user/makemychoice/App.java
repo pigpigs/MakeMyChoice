@@ -16,6 +16,7 @@ public class App extends Application{
         super.onCreate();
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Comment.class);
+        ParseObject.registerSubclass(Outcome.class);
         Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
     }
 }
