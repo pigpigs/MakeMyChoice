@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,6 +40,9 @@ public class PostFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_text_post, container, false);
+        if(getActivity().getIntent().getBooleanExtra("isOutcome", false)){
+            ((EditText)v.findViewById(R.id.post_mainBody_editText)).setHint("Tell us what happened!");
+        }
         Button button = (Button)v.findViewById(R.id.button_take_picture);
         button.setOnClickListener(new View.OnClickListener() {
             @Override

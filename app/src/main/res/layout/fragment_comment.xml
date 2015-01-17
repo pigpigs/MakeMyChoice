@@ -11,6 +11,5 @@
         android:ems="10"
         android:id="@+id/comment_reply"
         android:maxLines="6"
-        android:editable="true"
         android:minLines="3" />
 </LinearLayout>

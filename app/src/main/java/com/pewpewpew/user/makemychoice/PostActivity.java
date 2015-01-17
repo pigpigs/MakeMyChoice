@@ -97,36 +97,41 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.action_submit:
-                String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
-                titleStr = titleStr.replace("\n","");
-                Log.i(TAG, titleStr);
-                // Check title string length constraints
-                if (titleStr.length() == 0){
-                    Toast.makeText(this,"Please enter a title.",Toast.LENGTH_SHORT).show();
-                }else if(titleStr.length() > 150){
-                    Toast.makeText(this,"Title can have maximum of 150 characters. You have "+titleStr.length()+".",Toast.LENGTH_SHORT).show();
-                }else{
-                    // TODO- make the whole saving thing an asynctask that then runs saveeventually on the parse object, mainly to prevent bitmap lagging up
-                    // Make a new Post object
-                    Post newPost = new Post();
-                    newPost.setTitle(titleStr);
+                if(!getIntent().getBooleanExtra("isOutcome", false)) {
+                    String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
+                    titleStr = titleStr.replace("\n", "");
+                    Log.i(TAG, titleStr);
+                    // Check title string length constraints
+                    if (titleStr.length() == 0) {
+                        Toast.makeText(this, "Please enter a title.", Toast.LENGTH_SHORT).show();
+                    } else if (titleStr.length() > 150) {
+                        Toast.makeText(this, "Title can have maximum of 150 characters. You have " + titleStr.length() + ".", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // TODO- make the whole saving thing an asynctask that then runs saveeventually on the parse object, mainly to prevent bitmap lagging up
+                        // Make a new Post object
+                        Post newPost = new Post();
+                        newPost.setTitle(titleStr);
 
-                    String bodyStr = ((EditText)findViewById(R.id.post_mainBody_editText)).getText().toString();
-                    if (bodyStr!=null){
-                        newPost.setBody(bodyStr);
-                    }
+                        String bodyStr = ((EditText) findViewById(R.id.post_mainBody_editText)).getText().toString();
+                        if (bodyStr != null) {
+                            newPost.setBody(bodyStr);
+                        }
 
-                    // Save the Image if there is one
-                    if (mImagePath!=null) {
-                        //Decode and scale image
-                        Bitmap bmp = Utility.makeParseBitmap(mImagePath);
+                        // Save the Image if there is one
+                        if (mImagePath != null) {
+                            //Decode and scale image
+                            Bitmap bmp = Utility.makeParseBitmap(mImagePath);
 
-                        // Output bitmap and save to server
-                        // TODO - callback to delete image once it's done, can use Parse's savecallback in saveinbackground
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-                        byte[] data = stream.toByteArray();
-                        newPost.setImage(data);
+                            // Output bitmap and save to server
+                            // TODO - callback to delete image once it's done, can use Parse's savecallback in saveinbackground
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] data = stream.toByteArray();
+                            newPost.setImage(data);
+
+                        }
+
+                        // Proceed if no image
                         newPost.setCurrentUser();
                         newPost.saveInBackground();
 
@@ -134,8 +139,60 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
                         Toast.makeText(this, "Post submitted!", Toast.LENGTH_SHORT).show();
                         setResult(RESULT_OK);
                         finish();
+
+                    }
+                }else{
+                    // Create new outcome post
+                    String titleStr = ((EditText) findViewById(R.id.post_title_editText)).getText().toString();
+                    titleStr = titleStr.replace("\n", "");
+                    Log.i(TAG, titleStr);
+                    // Check title string length constraints
+                    if (titleStr.length() == 0) {
+                        Toast.makeText(this, "Please enter a title.", Toast.LENGTH_SHORT).show();
+                    } else if (titleStr.length() > 150) {
+                        Toast.makeText(this, "Title can have maximum of 150 characters. You have " + titleStr.length() + ".", Toast.LENGTH_SHORT).show();
+                    } else {
+                        // make new outcome object
+                        Outcome outcome= new Outcome();
+                        outcome.setTitle(titleStr);
+
+                        String bodyStr = ((EditText) findViewById(R.id.post_mainBody_editText)).getText().toString();
+                        if (bodyStr != null) {
+                            outcome.setBody(bodyStr);
+                        }
+
+                        // Save the Image if there is one
+                        if (mImagePath != null) {
+                            //Decode and scale image
+                            Bitmap bmp = Utility.makeParseBitmap(mImagePath);
+
+                            // Output bitmap and save to server
+                            // TODO - callback to delete image once it's done, can use Parse's savecallback in saveinbackground
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                            byte[] data = stream.toByteArray();
+                            outcome.setImage(data);
+
+                        }
+
+                        // Proceed if no image
+//                        outcome.setCurrentUser();
+                        Log.i(TAG, "attempting to save new outcome");
+                        outcome.saveInBackground();
+                        String postID = getIntent().getStringExtra(DetailActivity.KEY_POST_ID);
+                        Post post = ParseObject.createWithoutData(Post.class, postID);
+                        post.setOutcome(outcome);
+                        post.saveInBackground();
+
+                        // Set result
+                        Toast.makeText(this, "Outcome submitted!", Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
+                        finish();
+
                     }
                 }
+
+
             default:
                 return super.onOptionsItemSelected(item);
         }

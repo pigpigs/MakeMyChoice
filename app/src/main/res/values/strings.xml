@@ -2,7 +2,6 @@
 <resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
 
     <string name="app_name">MakeMyChoice</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="format_post_data">
         Submitted by <xliff:g id="user">%1$s</xliff:g> <xliff:g id="time_since">%2$s</xliff:g> - <xliff:g id="num_comments">%3$s</xliff:g> comments - <xliff:g id="points">%4$s</xliff:g> points
@@ -17,4 +16,8 @@
     <string name="body_hint">More about your dilemma here! (Optional)</string>
     <string name="fragment_dialog_reply">Reply</string>
     <string name="fragment_dialog_cancel">Cancel</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="EditActivity_label">Edit Your Post</string>
+    <string name="PostActivity_label">New Post</string>
 </resources>

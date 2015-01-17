@@ -31,7 +31,6 @@
             android:hint="Username"
             android:background="#ffffff"
             android:layout_margin="10dp"
-            android:editable="true"
             android:enabled="true"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -52,7 +51,7 @@
             android:paddingRight="10dp"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
-            android:editable="false" />
+            />
 
         <EditText
             android:layout_width="match_parent"
@@ -67,7 +66,7 @@
             android:paddingRight="10dp"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
-            android:editable="false" />
+             />
 
         <Button
             style="?android:attr/buttonStyleSmall"

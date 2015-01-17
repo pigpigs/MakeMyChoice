@@ -11,7 +11,7 @@ import com.parse.ParseObject;
 public class Outcome extends ParseObject{
     private String OUTCOME_BODY = "body";
     private String OUTCOME_IMAGE = "image";
-
+    private String OUTCOME_TITLE = "title";
 
     public Outcome(){}
 
@@ -21,7 +21,13 @@ public class Outcome extends ParseObject{
         ParseFile file = new ParseFile("outcome_image.jpg",data);
         put(OUTCOME_IMAGE, file);
     }
+    public void setTitle(String title){
+        put(OUTCOME_TITLE, title);
+    }
 
+    public String getTitle(){
+        return getString(OUTCOME_TITLE);
+    }
     public ParseFile getImage(){return getParseFile(OUTCOME_IMAGE);}
 
     public String getBody(){return getString(OUTCOME_BODY);}

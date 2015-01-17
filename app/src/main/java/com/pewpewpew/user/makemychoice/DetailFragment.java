@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,6 +33,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.RefreshCallback;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,11 +53,7 @@ public class DetailFragment  extends Fragment{
     private Post mPost;
     public DetailFragment(){}
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
 
-        super.onCreate(savedInstanceState);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,8 +64,7 @@ public class DetailFragment  extends Fragment{
 
         final View v = inflater.inflate(R.layout.fragment_detail_test, container, false);
         ListView listView = (ListView) v.findViewById(R.id.listView_comments);
-        //FIXME - figure out what the root param is supposed to be here
-        View headerView = inflater.inflate(R.layout.fragment_detail_header, null);
+        View headerView = inflater.inflate(R.layout.fragment_detail_header, listView, false);
         listView.addHeaderView(headerView);
 
         // TODO - speed up loading of data with datastore
@@ -82,10 +79,12 @@ public class DetailFragment  extends Fragment{
                     Outcome outcome = thisPost.getOutcome();
                     if(outcome != null){
                         Log.i(TAG, "Post has outcome");
+                        DetailActivity.postHasOutcome = 1;
                         OutcomeFragment.inflateViews(outcome.getObjectId());
 
                     }else{
                         Log.i(TAG, "no outcome");
+                        DetailActivity.postHasOutcome = 0;
                     }
 
                     //Get title
@@ -94,13 +93,19 @@ public class DetailFragment  extends Fragment{
 //                    Log.i(TAG, "Title: "+postTitle);
                     titleTextView.setText(postTitle);
 
+                    //Get post body
+                    String postBody = thisPost.getBody();
+                    TextView bodyTextView = (TextView) v.findViewById(R.id.post_body);
+                    bodyTextView.setText(postBody);
+
                     // Get image
                     ParseFile parseFile = thisPost.getImage();
 
                     if(parseFile== null){
                         Log.i(TAG, "No image!");
                     }else{
-                        ParseImageView imageView = (ParseImageView) v.findViewById(R.id.post_image);
+                        final View inflatedView = ((ViewStub) v.findViewById(R.id.detail_imagestub)).inflate();
+                        ParseImageView imageView = (ParseImageView) inflatedView.findViewById(R.id.post_image);
                         imageView.setParseFile(thisPost.getImage());
                         imageView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -120,10 +125,7 @@ public class DetailFragment  extends Fragment{
 
                     }
 
-                    //Get post body
-                    String postBody = thisPost.getBody();
-                    TextView bodyTextView = (TextView) v.findViewById(R.id.post_body);
-                    bodyTextView.setText(postBody);
+
 
                     ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
                     replyButton.setOnClickListener(new View.OnClickListener() {
@@ -171,13 +173,16 @@ public class DetailFragment  extends Fragment{
                         @Override
                         public void onLoading() {
                             // Trigger loading UI??
+                            v.findViewById(R.id.detail_progressBar).setVisibility(View.VISIBLE);
+                            v.findViewById(R.id.detail_noComments).setVisibility(View.GONE);
                         }
 
                         @Override
                         public void onLoaded(List<Comment> comments, Exception e) {
+                            v.findViewById(R.id.detail_progressBar).setVisibility(View.GONE);
                             if(e == null){
                                 if(comments.size() == 0){
-                                    Toast.makeText(getActivity(),"No Comments", Toast.LENGTH_SHORT).show();
+                                    v.findViewById(R.id.detail_noComments).setVisibility(View.VISIBLE);
                                 }
                             }
                         }
@@ -280,5 +285,24 @@ public class DetailFragment  extends Fragment{
 
 
         return f;
+    }
+    public void refreshData(){
+        mPost.refreshInBackground(new RefreshCallback() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                Post thisPost = (Post) object;
+                //Get title
+                String postTitle = thisPost.getTitle();
+                TextView titleTextView = (TextView) getActivity().findViewById(R.id.post_title);
+//                    Log.i(TAG, "Title: "+postTitle);
+                titleTextView.setText(postTitle);
+
+                //Get post body
+                String postBody = thisPost.getBody();
+                TextView bodyTextView = (TextView) getActivity().findViewById(R.id.post_body);
+                bodyTextView.setText(postBody);
+
+            }
+        });
     }
 }

@@ -29,6 +29,7 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.RefreshCallback;
 
 /**
  * The outcome fragment will currently use the same layout as the DetailFragment.
@@ -42,8 +43,9 @@ public class OutcomeFragment extends Fragment {
 
     private static final String TAG = "OutcomeFragment_debug";
     private static final int REQUEST_REPLY = 101;
-    private Post mPost;
-    static Context mContext;
+    private static Post mPost;
+    private static Outcome mOutcome;
+    static Activity mContext;
     static View mView;
     static String postId;
     public OutcomeFragment(){}
@@ -110,12 +112,12 @@ public class OutcomeFragment extends Fragment {
 //                .commit();
     }
 
-    public void toggleVisibility(){
-        LinearLayout container = (LinearLayout) getActivity().findViewById(R.id.expanded_image_container);
+    private static void toggleVisibility(){
+        LinearLayout container = (LinearLayout) mContext.findViewById(R.id.expanded_image_container);
 
         if(container.getVisibility() == View.GONE){
             container.setVisibility(View.VISIBLE);
-            ParseImageView parseImageView = (ParseImageView) getActivity().findViewById(R.id.expanded_image_view);
+            ParseImageView parseImageView = (ParseImageView) mContext.findViewById(R.id.expanded_image_view);
             if(parseImageView.getDrawable() == null){
                 Log.i(TAG, "Setting Image File.");
                 parseImageView.setParseFile(mPost.getImage());
@@ -149,7 +151,7 @@ public class OutcomeFragment extends Fragment {
 
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        final View headerView = inflater.inflate(R.layout.fragment_detail_header, null);
+        final View headerView = inflater.inflate(R.layout.fragment_detail_header, listView, false);
         listView.addHeaderView(headerView);
 
 
@@ -157,11 +159,10 @@ public class OutcomeFragment extends Fragment {
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
             @Override
             public void done(final Post thisPost, ParseException e) {
+                mPost = thisPost;
+//                //Get title
+//                String postTitle = "[OUTCOME] " + thisPost.getTitle();
 
-                //Get title
-                String postTitle = "[OUTCOME] " + thisPost.getTitle();
-                TextView titleTextView = (TextView) headerView.findViewById(R.id.post_title);
-                titleTextView.setText(postTitle);
 
                 // Retrieve comments for the current Post
                 ParseQueryAdapter.QueryFactory<Comment> factory = new ParseQueryAdapter.QueryFactory<Comment>() {
@@ -201,16 +202,80 @@ public class OutcomeFragment extends Fragment {
         outcome.fetchIfNeededInBackground(new GetCallback<Outcome>() {
             @Override
             public void done(Outcome thisOutcome, ParseException e) {
-                Log.i(TAG, "Outcome body: "+thisOutcome.getBody());
+                mOutcome = thisOutcome;
+                // Get Title
+                String title = thisOutcome.getTitle();
+                TextView titleTextView = (TextView) headerView.findViewById(R.id.post_title);
+                titleTextView.setText(title);
 
                 //Get  outcome body
                 String outcomeBody = thisOutcome.getBody();
                 TextView bodyTextView = (TextView) headerView.findViewById(R.id.post_body);
                 bodyTextView.setText(outcomeBody);
+
+                // Retrieve image if any
+                ParseFile parseFile = thisOutcome.getImage();
+
+                if(parseFile== null){
+                    Log.i(TAG, "No image!");
+                }else{
+                    View stub = ((ViewStub)headerView.findViewById(R.id.detail_imagestub)).inflate();
+                    ParseImageView imageView = (ParseImageView) stub.findViewById(R.id.post_image);
+                    imageView.setParseFile(parseFile);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Click to show high res view
+                            toggleVisibility();
+
+                        }
+                    });
+                    imageView.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] bytes, ParseException e) {
+                            Log.i(TAG, "Image Loaded!");
+                        }
+                    });
+                }
             }
         });
     }
 
+    public void refreshData(){
+        if(getActivity().findViewById(R.id.detail_stub) == null) {
+
+            mOutcome.refreshInBackground(new RefreshCallback() {
+                @Override
+                public void done(ParseObject parseObject, ParseException e) {
+                    Outcome thisOutcome = (Outcome) parseObject;
+
+                    // Get Title
+                    String title = thisOutcome.getTitle();
+                    TextView titleTextView = (TextView) mView.findViewById(R.id.post_title);
+                    titleTextView.setText(title);
+
+                    //Get  outcome body
+                    String outcomeBody = thisOutcome.getBody();
+                    Log.i(TAG, "outcome body: " + outcomeBody);
+                    TextView bodyTextView = (TextView) mView.findViewById(R.id.post_body);
+                    bodyTextView.setText(outcomeBody);
+                }
+            });
+        }else{
+            Post post = ParseObject.createWithoutData(Post.class, postId);
+            post.fetchIfNeededInBackground(new GetCallback<Post>() {
+                @Override
+                public void done(Post thisPost, ParseException e) {
+                    thisPost.getOutcome().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                        @Override
+                        public void done(ParseObject parseObject, ParseException e) {
+                            inflateViews(parseObject.getObjectId());
+                        }
+                    });
+                }
+            });
+        }
+    }
     // for PagerAdapter, not sure if needed but wtv
     public static Fragment newInstance(int i) {
         OutcomeFragment f = new OutcomeFragment();

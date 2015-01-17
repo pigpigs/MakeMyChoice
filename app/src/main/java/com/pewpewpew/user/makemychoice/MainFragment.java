@@ -46,6 +46,7 @@ public class MainFragment extends Fragment {
     public static final String KEY_POST_TITLE = "post_title_key";
     public static final String KEY_POST_ID = "post_id";
     private static final int REQUEST_NEW_POST = 88;
+    public static final String KEY_POST_OP = "post_op_key";
     private ParseQueryAdapter<Post> mAdapter;
     SharedPreferences mSharedPreferences;
     private static String sortMode;
@@ -114,6 +115,7 @@ public class MainFragment extends Fragment {
 
 
         }else if (id == R.id.action_refresh){
+            mAdapter.notifyDataSetChanged();
             mAdapter.loadObjects();
         }else if(id == R.id.action_signout){
             ParseUser.logOut();
@@ -233,7 +235,7 @@ public class MainFragment extends Fragment {
 //                intent.putExtra(KEY_POST_TITLE,title);
 
                 intent.putExtra(KEY_POST_ID , post.getObjectId());
-
+                intent.putExtra(KEY_POST_OP, post.getUserStr());
                 startActivity(intent);
             }
         });
@@ -245,6 +247,7 @@ public class MainFragment extends Fragment {
         if (requestCode == REQUEST_NEW_POST){
             if( resultCode == Activity.RESULT_OK){
                 Log.i(TAG, "Result received successfully.");
+                mAdapter.notifyDataSetChanged();
                 mAdapter.loadObjects();
             }else{
                 Log.i(TAG,"User cancelled.");
