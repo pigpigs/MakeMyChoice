@@ -63,14 +63,14 @@ public class DetailFragment  extends Fragment{
         final String postId = intent.getStringExtra(MainFragment.KEY_POST_ID);
         Post post = ParseObject.createWithoutData(Post.class, postId);
 //        Log.i(TAG, ""+post.isDataAvailable());
-        // note- now using the test layout that contains a listview with headerview for the scrolling issue
+
         final View v = inflater.inflate(R.layout.fragment_detail_test, container, false);
         ListView listView = (ListView) v.findViewById(R.id.listView_comments);
         //FIXME - figure out what the root param is supposed to be here
         View headerView = inflater.inflate(R.layout.fragment_detail_header, null);
         listView.addHeaderView(headerView);
-        // TODO - find out how to inflate the views faster, maybe pass in the post title  straight? load faster? WHY IS PARSE SO SLOW
-        // note- its not the image that slows it down, might need to prefetch or something, or maybe datastore will be enough
+
+        // TODO - speed up loading of data with datastore
 
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
             @Override
@@ -155,9 +155,12 @@ public class DetailFragment  extends Fragment{
                                     }
 //                                    Log.i(TAG, "Comment: "+ comment);
                                     ((TextView) v.findViewById(R.id.comment_body)).setText(comment.getBody());
+
+                                    String username = comment.getUserStr();
+
                                     ((TextView) v.findViewById(R.id.comment_meta)).setText(
                                             String.format(" %s | %s ",
-                                                    "username",
+                                                    username == null? "username":username,
                                                     Utility.getTimeSince(comment.getCreatedAt())
                                             )
                                     );
@@ -202,6 +205,7 @@ public class DetailFragment  extends Fragment{
                 Comment newComment = new Comment();
                 newComment.setBody(commentBody);
                 newComment.setPost(mPost);
+                newComment.setCurrentUser();
                 newComment.saveInBackground();
             }
         }

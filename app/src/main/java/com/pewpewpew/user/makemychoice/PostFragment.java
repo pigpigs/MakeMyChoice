@@ -92,7 +92,7 @@ public class PostFragment extends Fragment {
                     // Set it as visible to take up necessary space for bitmap computation
                     postImageView.setVisibility(View.INVISIBLE);
 
-                    //TODO - Implement cache clearing if this takes off!
+                    //TODO - Abort the BitmapWorkerTask (if any) and delete the file on Discard
 
                 }
             }

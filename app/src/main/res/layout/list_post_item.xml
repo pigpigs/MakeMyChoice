@@ -4,7 +4,6 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
-    android:background="#D0D0D0"
     android:id="@+id/list_post_item"
     >
 

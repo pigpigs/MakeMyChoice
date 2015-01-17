@@ -21,12 +21,15 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.ParseUser;
 
 import junit.framework.Test;
 
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -112,6 +115,9 @@ public class MainFragment extends Fragment {
 
         }else if (id == R.id.action_refresh){
             mAdapter.loadObjects();
+        }else if(id == R.id.action_signout){
+            ParseUser.logOut();
+            getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -139,7 +145,7 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         //Inflate custom view here and instantiate
-        View view = inflater.inflate(R.layout.fragment_main,container, false);
+        final View view = inflater.inflate(R.layout.fragment_main,container, false);
 
         // TODO - bundle in stuff to retain instance on config change etc etc
 
@@ -159,7 +165,7 @@ public class MainFragment extends Fragment {
                     query.orderByDescending("points");
                 }
 
-                // TODO- delete posts older than 5 days (do this everytime we save? or just run it every day manually..)
+                // TODO- delete posts that have no activity for the last X days eg no comment no views
                 return query;
             }
         };
@@ -186,8 +192,12 @@ public class MainFragment extends Fragment {
                 // TODO- implement numComments
                 String numComments = "0";
 
+                // Get the username string. This was added as loading classes seem to take super long on Parse. Call getUser when needed.
+                String username = post.getUserStr();
+
                 postData.setText(String.format(
                         getString(R.string.format_post_data) , // String format from xml
+                        username,
                         timeSince,
                         // TODO - add formatting for plurality for numComments and points
                         numComments,
@@ -196,6 +206,19 @@ public class MainFragment extends Fragment {
                 return v;
             }
         };
+        mAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Post>() {
+            @Override
+            public void onLoading() {
+                Log.i(TAG, "Loading...");
+                view.findViewById(R.id.main_progressBar).setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoaded(List<Post> posts, Exception e) {
+                Log.i(TAG, "Loaded.");
+                view.findViewById(R.id.main_progressBar).setVisibility(View.GONE);
+            }
+        });
         listView.setAdapter(mAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

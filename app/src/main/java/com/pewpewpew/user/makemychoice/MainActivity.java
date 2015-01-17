@@ -9,8 +9,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -20,12 +22,15 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 
 import org.w3c.dom.Text;
 
 
 public class MainActivity extends ActionBarActivity {
-//    static String PARSE_APPLICATION_ID = "bUeHCuWuE5uOmvq8zNoBHQnyPKgmiwydAgCyPJmb";
+    private static final String TAG = "MainActivity_debug";
+
+    //    static String PARSE_APPLICATION_ID = "bUeHCuWuE5uOmvq8zNoBHQnyPKgmiwydAgCyPJmb";
 //    static String PARSE_CLIENT_KEY = "iyWexA1bv6ntSDuCejd3KNj7uweNAKzWFC6UdN5c";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,14 +40,84 @@ public class MainActivity extends ActionBarActivity {
 
         // Show a sign up activity unless user is authenticated, check using SharedPreferences
 
-        setContentView(R.layout.activity_main);
-        if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.some_container, new MainFragment())
-                    .commit();
+        // using ParseUser.getCurrentUser to check user if logged in now.
+        if(ParseUser.getCurrentUser() != null) {
+            Log.i(TAG, "Current user logged in: " + ParseUser.getCurrentUser().getUsername());
+            // User is logged in, proceed with Main Fragment
+            setContentView(R.layout.activity_main);
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.some_container, new MainFragment())
+                        .commit();
+            }
+            Toast.makeText(MainActivity.this, "Welcome " + ParseUser.getCurrentUser().getUsername()+"!", Toast.LENGTH_SHORT).show();
+        }else{
+            // User not logged in, let them sign in or register
+            setContentView(R.layout.activity_signup);
+            ((Button) findViewById(R.id.signup_button)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String username = ((EditText) findViewById(R.id.username)).getText().toString();
+                    String password = ((EditText) findViewById(R.id.password)).getText().toString();
+                    String passwordAgain = ((EditText) findViewById(R.id.password_again)).getText().toString();
+                    final TextView errorMessage = (TextView) findViewById(R.id.error_message);
+
+                    if(username.length() == 0 || password.length() == 0 || passwordAgain.length() == 0){
+                        errorMessage.setText("Please fill in all the fields.");
+                        displayErrorToast();
+                        return;
+                    }
+
+                    String illegalChars = ".*[^a-zA-Z0-9-_].*";
+                    if(username.matches(illegalChars)){
+                        errorMessage.setText("Illegal Characters in Username. (Only alphanumeric characters, dashes and hyphens are allowed!)");
+                        displayErrorToast();
+                        return;
+                    }
+
+                    if(!password.equals(passwordAgain)){
+                        errorMessage.setText("The password in both fields are not the same.");
+                        displayErrorToast();
+                        return;
+                    }
+
+                    if(password.length() <=7){
+                        errorMessage.setText("Password is too short! (At least 8 characters)");
+                        displayErrorToast();
+                        return;
+                    }
+
+                    ParseUser user = new ParseUser();
+                    user.setUsername(username);
+                    user.setPassword(password);
+
+                    user.signUpInBackground(new SignUpCallback() {
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                // Hooray! Let them use the app now.
+                                setContentView(R.layout.activity_main);
+                                getSupportFragmentManager().beginTransaction()
+                                        .add(R.id.some_container, new MainFragment())
+                                        .commit();
+                            } else {
+                                Log.i(TAG, "Authentication Error: " + e.getMessage());
+                                // Sign up didn't succeed. Look at the ParseException
+                                // to figure out what went wrong
+
+                                errorMessage.setText("Username is already taken.");
+
+                            }
+                        }
+                    });
+
+                    }
+
+            });
         }
     }
-
+    private void displayErrorToast(){
+        Toast.makeText(getApplicationContext(), "An error has occurred.", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

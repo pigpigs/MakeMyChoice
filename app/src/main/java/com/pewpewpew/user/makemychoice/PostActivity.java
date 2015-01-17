@@ -122,10 +122,12 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
                         Bitmap bmp = Utility.makeParseBitmap(mImagePath);
 
                         // Output bitmap and save to server
+                        // TODO - callback to delete image once it's done, can use Parse's savecallback in saveinbackground
                         ByteArrayOutputStream stream = new ByteArrayOutputStream();
                         bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                         byte[] data = stream.toByteArray();
                         newPost.setImage(data);
+                        newPost.setCurrentUser();
                         newPost.saveInBackground();
 
                         // Set result

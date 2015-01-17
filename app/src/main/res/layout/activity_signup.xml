@@ -31,11 +31,13 @@
             android:hint="Username"
             android:background="#ffffff"
             android:layout_margin="10dp"
-            android:autoText="false"
             android:editable="true"
-            android:enabled="false"
+            android:enabled="true"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:inputType="textVisiblePassword|textNoSuggestions" />
 
         <EditText
             android:layout_width="match_parent"
@@ -47,7 +49,10 @@
             android:background="#ffffff"
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:editable="false" />
 
         <EditText
             android:layout_width="match_parent"
@@ -59,7 +64,10 @@
             android:background="#ffffff"
             android:layout_margin="10dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp" />
+            android:paddingRight="10dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:editable="false" />
 
         <Button
             style="?android:attr/buttonStyleSmall"
@@ -69,6 +77,14 @@
             android:id="@+id/signup_button"
             android:background="#002842"
             android:textColor="#ffffff" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/error_message"
+            android:layout_margin="12dp"
+            android:textColor="#ffffff"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
