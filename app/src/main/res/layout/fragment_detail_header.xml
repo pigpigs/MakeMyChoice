@@ -68,7 +68,6 @@
             android:gravity="center_vertical|center_horizontal"
             android:background="#c8c8c8"
             android:paddingTop="8dp"
-
             android:paddingBottom="8dp">
 
             <ImageButton
@@ -76,15 +75,15 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_reply"
                 android:src="@drawable/ic_action_reply"
-                android:background="#c8c8c8"
+                android:background="@null"
                 android:layout_weight="1" />
 
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/button_heart"
-                android:src="@drawable/ic_action_favorite"
-                android:background="#c8c8c8"
+                android:src="@drawable/heart_button_selector"
+                android:background="@null"
                 android:layout_weight="1" />
 
             <ImageButton
@@ -92,7 +91,8 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/button_report"
                 android:src="@drawable/ic_action_error"
-                android:background="#c8c8c8"
+                android:background="@null"
+
                 android:layout_weight="1" />
 
 

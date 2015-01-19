@@ -26,8 +26,8 @@ public class DetailActivity extends ActionBarActivity {
     public static final String KEY_TYPE = "type_key";
     public static final int EDIT_TYPE_POST = 8888;
     public static final int EDIT_TYPE_OUTCOME = 8887;
-    public static int postHasOutcome = -1; // -1 = undefined, 0 = false, 1 = true, to avoid server data from being screwed up
-    private static boolean hasOutcome;
+//    static iString mPostID; removed to prevent config change problems
+
     private DetailPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
     private static final int id_action_edit = 8889;
@@ -66,8 +66,7 @@ public class DetailActivity extends ActionBarActivity {
                 try {
                     Post post = ParseObject.createWithoutData(Post.class, getIntent().getStringExtra(MainFragment.KEY_POST_ID));
                     post.fetch();
-                    hasOutcome = post.getOutcome() !=null;
-                    Log.i(TAG, "Outcome?? " + hasOutcome);
+                     boolean hasOutcome = post.getOutcome() !=null;
                     if(!hasOutcome){
                         // No outcome yet, startActivity to create a new one to this post
                         Intent intent = new Intent(DetailActivity.this, PostActivity.class);
@@ -93,10 +92,9 @@ public class DetailActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO- make container fragment, add detail fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
+//        mPostID = getIntent().getStringExtra(MainFragment.KEY_POST_ID);
         // ViewPager and its adapters use support library
         // fragments, so use getSupportFragmentManager.
         mPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager());
@@ -153,5 +151,16 @@ public class DetailActivity extends ActionBarActivity {
             return NUM_ITEMS;
         }
     }
+
+    public static void followPost(String postID){
+//        ParseUser.getCurrentUser().put("followedPost",);
+        // UI changes?
+        ParseObject followed = new ParseObject("Follow");
+        followed.put("from", ParseUser.getCurrentUser());
+        followed.put("to", ParseObject.createWithoutData(Post.class, postID));
+        followed.saveInBackground();
+
+    }
+
 
 }

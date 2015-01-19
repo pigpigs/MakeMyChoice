@@ -243,7 +243,7 @@ public class OutcomeFragment extends Fragment {
 
     public void refreshData(){
         if(getActivity().findViewById(R.id.detail_stub) == null) {
-
+            // Refresh data as per normal if there was an outcome
             mOutcome.refreshInBackground(new RefreshCallback() {
                 @Override
                 public void done(ParseObject parseObject, ParseException e) {
@@ -262,6 +262,7 @@ public class OutcomeFragment extends Fragment {
                 }
             });
         }else{
+            // If there was no outcome, run inflateViews
             Post post = ParseObject.createWithoutData(Post.class, postId);
             post.fetchIfNeededInBackground(new GetCallback<Post>() {
                 @Override
@@ -284,7 +285,6 @@ public class OutcomeFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt("num", i);
         f.setArguments(args);
-
 
         return f;
     }

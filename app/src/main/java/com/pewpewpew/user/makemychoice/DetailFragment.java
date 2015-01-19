@@ -67,6 +67,56 @@ public class DetailFragment  extends Fragment{
         View headerView = inflater.inflate(R.layout.fragment_detail_header, listView, false);
         listView.addHeaderView(headerView);
 
+        // Buttons
+        ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
+        replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replyToPost(postId); // the argument is currently useless, considering whether should implement another method for replying to comment
+            }
+        });
+
+        // Heart Button for following - Check if user has followed the post. if yes, heart should be lit up, and will unfav onClick
+        final ImageButton heartButton = (ImageButton) v.findViewById(R.id.button_heart);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+        query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
+        query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if(parseObjects.size()!=0 ){
+                    // User has followed post, unfollow
+                    heartButton.setSelected(true);
+                }
+            }
+        });
+
+        heartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+                query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
+                query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        heartButton.setSelected(!heartButton.isSelected()); //flip selected state
+                        if(parseObjects.size()!=0 ){
+                            // User has followed post, unfollow
+                            Log.i(TAG, "Unfollowing post");
+                            parseObjects.get(0).deleteInBackground();
+
+                        }else{
+                            Log.i(TAG, "Following post");
+                            DetailActivity.followPost(postId);
+                        }
+                    }
+                });
+
+            }
+        });
+
         // TODO - speed up loading of data with datastore
 
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
@@ -78,13 +128,10 @@ public class DetailFragment  extends Fragment{
                     // Trigger a callback if there is an outcome for the current post
                     Outcome outcome = thisPost.getOutcome();
                     if(outcome != null){
-                        Log.i(TAG, "Post has outcome");
-                        DetailActivity.postHasOutcome = 1;
                         OutcomeFragment.inflateViews(outcome.getObjectId());
-
                     }else{
                         Log.i(TAG, "no outcome");
-                        DetailActivity.postHasOutcome = 0;
+
                     }
 
                     //Get title
@@ -127,18 +174,10 @@ public class DetailFragment  extends Fragment{
 
 
 
-                    ImageButton replyButton = (ImageButton) v.findViewById(R.id.button_reply);
-                    replyButton.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            replyToPost(postId); // the argument is currently useless, considering whether should implement another method for replying to comment
-                        }
-                    });
-
 
 
                     // Retrieve comments for the current Post
-                    //note - comments can only be queried after the post info has been downloaded, so this should be inside the done method as well (which is here)
+                    // comments can only be queried after the post info has been downloaded, so this should be inside the done method as well (which is here)
                     ParseQueryAdapter.QueryFactory<Comment> factory = new ParseQueryAdapter.QueryFactory<Comment>() {
                         @Override
                         public ParseQuery<Comment> create() {
