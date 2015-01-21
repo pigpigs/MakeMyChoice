@@ -3,6 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
+        <item name="actionBarStyle">@style/coloredActionBar</item>
+        <item name="android:actionBarStyle">@style/coloredActionBar</item>
     </style>
 
     <style name="subtext">
@@ -10,8 +12,15 @@
 
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">12sp</item>
     </style>
 
-    <color name="subtext">#3c5952</color>
+    <style name="coloredActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+
+        <item name="android:background">@color/actionBarColor</item>
+        <item name="background">@color/actionBarColor</item>
+
+    </style>
+
+
 </resources>

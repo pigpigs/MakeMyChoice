@@ -3,15 +3,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center">
+    android:gravity="center"
+    android:background="@color/main_background"
+    >
 
 
-
+<!-- TODO - replace this textview with art -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Nothing here yet! Follow some posts to view their Outcomes!"
-        android:textSize="17sp"
+        android:textSize="16sp"
         android:padding="16dp"
         android:id="@+id/emptyListView"
         android:visibility="gone"/>
@@ -19,6 +21,12 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10dp"
+        android:scrollbars="none"
         android:id="@+id/listView_main" />
 
 

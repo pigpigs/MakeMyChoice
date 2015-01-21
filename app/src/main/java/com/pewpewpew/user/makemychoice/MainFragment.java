@@ -201,7 +201,7 @@ public class MainFragment extends Fragment {
                 postUsername.setText(username);
 
                 if(post.getOutcome() != null){
-                    v.setBackgroundColor(getResources().getColor(R.color.outcome_post));
+                    v.setBackgroundColor(getResources().getColor(R.color.list_item_outcome));
                 }
                 return v;
             }
