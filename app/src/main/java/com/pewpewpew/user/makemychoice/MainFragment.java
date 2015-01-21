@@ -181,30 +181,28 @@ public class MainFragment extends Fragment {
 
                 ((TextView)v.findViewById(R.id.post_title)).setText(post.getTitle());
 
-                TextView postData = (TextView)v.findViewById(R.id.post_data);
+                TextView postTimeSince = (TextView)v.findViewById(R.id.post_time);
                 // Get timeSince, numComments and numPoints for post data
 
                 String timeSince = Utility.getTimeSince(post.getCreatedAt());
-
-                // Upvotes on post
-                // Use increment for synchronization
-                String points = String.valueOf(post.getPoints());
+                postTimeSince.setText(timeSince);
 
                 //Number of comments, use increment on the field every time there is a new post
                 // TODO- implement numComments
+                TextView postNumComments = (TextView)v.findViewById(R.id.post_comment);
                 String numComments = "0";
+                postNumComments.setText("0 comments");
+
 
                 // Get the username string. This was added as loading classes seem to take super long on Parse. Call getUser when needed.
-                String username = post.getUserStr();
+                TextView postUsername = (TextView)v.findViewById(R.id.post_user);
 
-                postData.setText(String.format(
-                        getString(R.string.format_post_data) , // String format from xml
-                        username,
-                        timeSince,
-                        // TODO - add formatting for plurality for numComments and points
-                        numComments,
-                        points
-                ));
+                String username = post.getUserStr();
+                postUsername.setText(username);
+
+                if(post.getOutcome() != null){
+                    v.setBackgroundColor(getResources().getColor(R.color.outcome_post));
+                }
                 return v;
             }
         };
@@ -255,5 +253,17 @@ public class MainFragment extends Fragment {
         }else{
             Log.i(TAG, "Incorrect request code. This shouldn't happen at all.");
         }
+    }
+
+    public static Fragment newInstance(int i) {
+        MainFragment f = new MainFragment();
+
+        // Supply num input as an argument.
+        Bundle args = new Bundle();
+        args.putInt("num", i);
+        f.setArguments(args);
+
+
+        return f;
     }
 }

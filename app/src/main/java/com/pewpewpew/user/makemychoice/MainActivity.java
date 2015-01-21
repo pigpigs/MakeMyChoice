@@ -1,5 +1,9 @@
 package com.pewpewpew.user.makemychoice;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,32 +23,32 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
-import org.w3c.dom.Text;
+
 
 
 public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity_debug";
-
-    //    static String PARSE_APPLICATION_ID = "bUeHCuWuE5uOmvq8zNoBHQnyPKgmiwydAgCyPJmb";
-//    static String PARSE_CLIENT_KEY = "iyWexA1bv6ntSDuCejd3KNj7uweNAKzWFC6UdN5c";
+    private MainPagerAdapter mPagerAdapter;
+    private ViewPager mViewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
-
-        // Show a sign up activity unless user is authenticated, check using SharedPreferences
 
         // using ParseUser.getCurrentUser to check user if logged in now.
         if(ParseUser.getCurrentUser() != null) {
             Log.i(TAG, "Current user logged in: " + ParseUser.getCurrentUser().getUsername());
             // User is logged in, proceed with Main Fragment
-            setContentView(R.layout.activity_main);
-            if (savedInstanceState == null) {
-                getSupportFragmentManager().beginTransaction()
-                        .add(R.id.some_container, new MainFragment())
-                        .commit();
-            }
+//            setContentView(R.layout.activity_main);
+//            if (savedInstanceState == null) {
+//                getSupportFragmentManager().beginTransaction()
+//                        .add(R.id.some_container, new MainFragment())
+//                        .commit();
+//            }
+
+            setContentView(R.layout.activity_main_pager);
+            mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+            mViewPager = (ViewPager) findViewById(R.id.pager_main);
+            mViewPager.setAdapter(mPagerAdapter);
             Toast.makeText(MainActivity.this, "Welcome " + ParseUser.getCurrentUser().getUsername()+"!", Toast.LENGTH_SHORT).show();
         }else{
             // User not logged in, let them sign in or register
@@ -90,10 +94,15 @@ public class MainActivity extends ActionBarActivity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 // Hooray! Let them use the app now.
-                                setContentView(R.layout.activity_main);
-                                getSupportFragmentManager().beginTransaction()
-                                        .add(R.id.some_container, new MainFragment())
-                                        .commit();
+//                                setContentView(R.layout.activity_main);
+//                                getSupportFragmentManager().beginTransaction()
+//                                        .add(R.id.some_container, new MainFragment())
+//                                        .commit();
+                                setContentView(R.layout.activity_main_pager);
+                                mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
+                                mViewPager = (ViewPager) findViewById(R.id.pager);
+                                mViewPager.setAdapter(mPagerAdapter);
+                                Toast.makeText(MainActivity.this, "Welcome " + ParseUser.getCurrentUser().getUsername()+"!", Toast.LENGTH_SHORT).show();
                             } else {
                                 Log.i(TAG, "Authentication Error: " + e.getMessage());
                                 // Sign up didn't succeed. Look at the ParseException
@@ -127,9 +136,38 @@ public class MainActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.action_settings:
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
+
+
+
+    }
+
+    private int NUM_ITEMS = 2;
+    private class MainPagerAdapter extends FragmentPagerAdapter {
+        private MainPagerAdapter(FragmentManager fm){
+            super(fm);
+
+        }
+        @Override
+        public Fragment getItem(int i) {
+            switch(i){
+                case 0:
+                    return MainFragment.newInstance(i);
+                case 1:
+                    return FollowedFragment.newInstance(i);
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
     }
 }

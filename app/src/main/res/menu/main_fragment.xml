@@ -21,11 +21,6 @@
         android:title="Sign Out"
 
         />
-    <item
-        android:id="@+id/action_refresh"
-        android:title="Refresh"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_action_refresh"
-        />
+
 
 </menu>

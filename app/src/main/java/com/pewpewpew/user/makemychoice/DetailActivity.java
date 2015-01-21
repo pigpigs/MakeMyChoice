@@ -13,9 +13,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
+
+import java.util.List;
 
 /**
  * Created by User on 04/10/14.
@@ -152,13 +156,28 @@ public class DetailActivity extends ActionBarActivity {
         }
     }
 
-    public static void followPost(String postID){
+    public static void followPost(String postId){
 //        ParseUser.getCurrentUser().put("followedPost",);
         // UI changes?
-        ParseObject followed = new ParseObject("Follow");
-        followed.put("from", ParseUser.getCurrentUser());
-        followed.put("to", ParseObject.createWithoutData(Post.class, postID));
-        followed.saveInBackground();
+        final String id = postId;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+        query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
+        query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, id)); // to the current post
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if(parseObjects.size() ==0){
+                    ParseObject followed = new ParseObject("Follow");
+                    followed.put("from", ParseUser.getCurrentUser());
+                    followed.put("to", ParseObject.createWithoutData(Post.class, id));
+                    followed.put("postID", id);
+                    followed.saveInBackground();
+                }else{
+                    Log.i(TAG, "Duplicate detected dududududu");
+                }
+            }
+        });
+
 
     }
 

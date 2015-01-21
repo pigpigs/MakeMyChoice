@@ -1,38 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="?android:attr/listPreferredItemHeight"
     android:id="@+id/list_post_item"
+    android:background="#f5656c"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
     >
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Should I burn down my house or microwave an egg?"
+
+        android:id="@+id/post_title"
+        android:layout_gravity="center_vertical"
+        android:padding="8dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@color/title_color"
+        android:fontFamily="sans-serif-medium"
+        android:textStyle="bold"
+        />
+
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/data"
-        android:layout_weight="1">
+        android:gravity="center_vertical"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ic_time"
+            android:src="@drawable/ic_list_time" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Should I punch this ugly looking robot on the left or burn it?"
-            android:id="@+id/post_title"
-            android:layout_gravity="center_vertical"
-            android:padding="8dp"
-            android:ellipsize="end"
-            android:maxLines="5" />
+            android:text="3 hours ago"
+            style="@style/subtext"
+            android:id="@+id/post_time" />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ic_user"
+            android:src="@drawable/ic_list_user" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="3 hours ago - 99 comments - 1337 points"
-            android:textSize="12sp"
-            android:id="@+id/post_data"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp" />
+            android:text="someuser"
+            style="@style/subtext"
+            android:id="@+id/post_user" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ic_comment"
+            android:src="@drawable/ic_list_comment" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="369 comments"
+            style="@style/subtext"
+
+            android:id="@+id/post_comment" />
+
+
+
+
 
 
     </LinearLayout>
