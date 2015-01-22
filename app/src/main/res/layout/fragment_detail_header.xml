@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
+        android:background="@color/detail_buttonbar"
         >
-
 
 
         <TextView
@@ -24,7 +24,9 @@
             android:id="@+id/post_title"
             android:text="Post Title Here"
             android:textSize="33sp"
-
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textColor="@color/post_title"
              />
 
 
@@ -38,6 +40,7 @@
             android:fontFamily="sans-serif-light"
             android:paddingTop="12dp"
             android:paddingBottom="12dp"
+            android:textColor="@color/post_body"
             />
     </LinearLayout>
 
@@ -58,7 +61,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/button_bar"
             android:gravity="center_vertical|center_horizontal"
-            android:background="#6348FC"
+            android:background="@color/detail_buttonbar"
             android:paddingTop="8dp"
             android:paddingBottom="8dp">
 

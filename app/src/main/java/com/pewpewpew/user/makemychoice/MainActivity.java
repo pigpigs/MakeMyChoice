@@ -1,5 +1,8 @@
 package com.pewpewpew.user.makemychoice;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -30,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
     private static final String TAG = "MainActivity_debug";
     private MainPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
+    private static final int REQUEST_NEW_POST = 88;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,8 +141,25 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         switch (id){
-            case R.id.action_settings:
+            case R.id.action_newPost:
+                Intent intent = new Intent(MainActivity.this,PostActivity.class);
+                startActivityForResult(intent,REQUEST_NEW_POST);
                 return true;
+
+            case R.id.action_signout:
+                new AlertDialog.Builder(this)
+                        .setMessage("Are you sure you want to exit?")
+                        .setCancelable(false)
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                ParseUser.logOut();
+                                MainActivity.this.finish();
+
+                            }
+                        })
+                        .setNegativeButton("No",null)
+                        .create()
+                        .show();
 
             default:
                 return super.onOptionsItemSelected(item);

@@ -5,7 +5,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/post_data">
+    android:id="@+id/post_data"
+    android:background="@color/comment_list_background"
+    >
 
 
 
@@ -13,7 +15,9 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listView_comments" />
+        android:id="@+id/listView_comments"
+        android:background="@color/comment_list_background"
+        />
 
     <LinearLayout
         android:orientation="vertical"

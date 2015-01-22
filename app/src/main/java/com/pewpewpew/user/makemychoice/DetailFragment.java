@@ -185,6 +185,7 @@ public class DetailFragment  extends Fragment{
                         public ParseQuery<Comment> create() {
                             ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
                             query.whereEqualTo("parentPost", mPost);
+                            query.orderByAscending("createdAt");
                             return query;
                         }
                     };
@@ -253,6 +254,7 @@ public class DetailFragment  extends Fragment{
                 newComment.setPost(mPost);
                 newComment.setCurrentUser();
                 newComment.saveInBackground();
+                refreshData();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

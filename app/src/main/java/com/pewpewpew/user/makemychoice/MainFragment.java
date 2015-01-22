@@ -75,10 +75,7 @@ public class MainFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         // dev option to add new data onto Parse database
         int id = item.getItemId();
-        if (id == R.id.action_addData){
-            addNewData();
-            return true;
-        }else if (id == R.id.action_sortOptions){
+      if (id == R.id.action_sortOptions){
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.sort_dialogue_title)
                     .setItems(R.array.sort_options,new DialogInterface.OnClickListener() {
@@ -109,39 +106,11 @@ public class MainFragment extends Fragment {
             AlertDialog dialog = builder.create();
             dialog.show();
 
-        }else if (id == R.id.action_newPost){
-            Intent intent = new Intent(getActivity(),PostActivity.class);
-            startActivityForResult(intent,REQUEST_NEW_POST);
-
-
         }else if (id == R.id.action_refresh){
             mAdapter.notifyDataSetChanged();
             mAdapter.loadObjects();
-        }else if(id == R.id.action_signout){
-            ParseUser.logOut();
-            getActivity().finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addNewData() {
-        // Adds new data to parse database
-        String[] sampleData = new String[]{"Should I ask this cute girl out?","What should I do with this cute little thing?",
-                "Should I listen in Java class?","Destiny or Borderlands Prequel?","Macs or KFC?","Should I slim down for her?",
-                "Should I beat up the bully?","Not sure which headphones I should buy.. MMC!","MAKE MY CHOICE NANANANANNAA","Which guy do I go on a date with?",
-                "[DEV POST] Make Our Choice! Should we have different colors for posts with outcome and posts that are inactive for a few days?"
-        };
-        Random numGen = new Random(); // only instantiate once to prevent reseeding??
-        int idx = numGen.nextInt(sampleData.length); //nextInt is exclusive of topvalue, add 1 to make it inclusive
-        //
-        Post newPost = new Post();
-        newPost.setTitle(sampleData[idx]);
-
-        int samplePoints=numGen.nextInt(1338);
-        newPost.setPoints(samplePoints);
-        Log.i(TAG,"New Data: "+sampleData[idx]+" - "+ samplePoints);
-        newPost.saveInBackground();
-
     }
 
     @Override
