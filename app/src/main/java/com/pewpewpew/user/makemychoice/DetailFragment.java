@@ -51,6 +51,7 @@ public class DetailFragment  extends Fragment{
     private static final String TAG = "DetailFragment_debug";
     private static final int REQUEST_REPLY = 101;
     private Post mPost;
+    ParseQueryAdapter<Comment> commentsAdapter;
     public DetailFragment(){}
 
 
@@ -128,7 +129,8 @@ public class DetailFragment  extends Fragment{
                     // Trigger a callback if there is an outcome for the current post
                     Outcome outcome = thisPost.getOutcome();
                     if(outcome != null){
-                        OutcomeFragment.inflateViews(outcome.getObjectId());
+                        OutcomeFragment f = (OutcomeFragment) getActivity().getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + 1);
+                        f.inflateViews(outcome.getObjectId());
                     }else{
                         Log.i(TAG, "no outcome");
 
@@ -187,7 +189,7 @@ public class DetailFragment  extends Fragment{
                         }
                     };
                     // FUTURE- Posts to have polls for the choices, comments will indicate which choice the user chose
-                    ParseQueryAdapter<Comment> commentsAdapter =
+                    commentsAdapter =
                             new ParseQueryAdapter<Comment>(getActivity(), factory){
                                 @Override
                                 public View getItemView(Comment comment, View v, ViewGroup parent) {
@@ -343,5 +345,8 @@ public class DetailFragment  extends Fragment{
 
             }
         });
+        commentsAdapter.notifyDataSetChanged();
+        commentsAdapter.loadObjects();
+
     }
 }

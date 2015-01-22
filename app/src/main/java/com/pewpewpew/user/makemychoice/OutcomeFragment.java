@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -29,7 +30,10 @@ import com.parse.ParseImageView;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
+import com.parse.ParseUser;
 import com.parse.RefreshCallback;
+
+import java.util.List;
 
 /**
  * The outcome fragment will currently use the same layout as the DetailFragment.
@@ -138,7 +142,7 @@ public class OutcomeFragment extends Fragment {
         }
     }
 
-    public static void inflateViews(String outcomeID){
+    public void inflateViews(String outcomeID){
         Log.i(TAG, "outcomeid is " + outcomeID);
 
         // Remove the placeholder
@@ -154,6 +158,56 @@ public class OutcomeFragment extends Fragment {
         final View headerView = inflater.inflate(R.layout.fragment_detail_header, listView, false);
         listView.addHeaderView(headerView);
 
+
+        // Buttons
+        ImageButton replyButton = (ImageButton) inflatedView.findViewById(R.id.button_reply);
+        replyButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                replyToPost(postId); // the argument is currently useless, considering whether should implement another method for replying to comment
+            }
+        });
+
+        // Heart Button for following - Check if user has followed the post. if yes, heart should be lit up, and will unfav onClick
+        final ImageButton heartButton = (ImageButton) inflatedView.findViewById(R.id.button_heart);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+        query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
+        query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if(parseObjects.size()!=0 ){
+                    // User has followed post, unfollow
+                    heartButton.setSelected(true);
+                }
+            }
+        });
+
+        heartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+                query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
+                query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
+                query.findInBackground(new FindCallback<ParseObject>() {
+                    @Override
+                    public void done(List<ParseObject> parseObjects, ParseException e) {
+                        heartButton.setSelected(!heartButton.isSelected()); //flip selected state
+                        if(parseObjects.size()!=0 ){
+                            // User has followed post, unfollow
+                            Log.i(TAG, "Unfollowing post");
+                            parseObjects.get(0).deleteInBackground();
+
+                        }else{
+                            Log.i(TAG, "Following post");
+                            DetailActivity.followPost(postId);
+                        }
+                    }
+                });
+
+            }
+        });
 
         Post post = ParseObject.createWithoutData(Post.class, postId);
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
@@ -267,12 +321,15 @@ public class OutcomeFragment extends Fragment {
             post.fetchIfNeededInBackground(new GetCallback<Post>() {
                 @Override
                 public void done(Post thisPost, ParseException e) {
-                    thisPost.getOutcome().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
-                        @Override
-                        public void done(ParseObject parseObject, ParseException e) {
-                            inflateViews(parseObject.getObjectId());
-                        }
-                    });
+                    if(thisPost.getOutcome() != null) {
+                        // if it now has an outcome inflate the views
+                        thisPost.getOutcome().fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+                            @Override
+                            public void done(ParseObject parseObject, ParseException e) {
+                                inflateViews(parseObject.getObjectId());
+                            }
+                        });
+                    }
                 }
             });
         }

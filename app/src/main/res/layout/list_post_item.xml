@@ -17,7 +17,7 @@
         android:text="Should I burn down my house or microwave an egg?"
 
         android:id="@+id/post_title"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:paddingTop="8dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
@@ -28,7 +28,6 @@
 
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/title_color"
-        android:fontFamily="sans-serif-medium"
         android:textStyle="bold"
         />
 
@@ -48,7 +47,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/data"
-        android:gravity="center_vertical"
+        android:gravity="center"
+
         >
 
         <ImageView

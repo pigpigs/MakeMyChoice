@@ -4,10 +4,10 @@
     <color name="title_color">#111c40</color>
 
     <color name="subtext">#3c5952</color>
-    <color name="actionBarColor">#446cb3</color>
-    <color name="main_background">#dadfe1</color>
+    <color name="actionBarColor">#22313f</color>
+    <color name="main_background">#ECECEC</color>
     <color name="list_item_post">#f5656c</color>
     <color name="list_item_outcome">#1bbc98</color>
-    <!-- 446CB3 bright / 6C7A89 dull -->
+    <!-- 446CB3 bright / 8e44ad  -->
 
 </resources>
