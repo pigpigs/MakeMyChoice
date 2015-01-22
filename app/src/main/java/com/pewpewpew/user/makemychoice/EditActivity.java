@@ -92,6 +92,7 @@ public class EditActivity extends ActionBarActivity{
                             post.saveInBackground();
 
                             // Set result code and refresh on activity result?
+                            setResult(RESULT_OK);
                             EditActivity.this.finish();
                         }
                     });
@@ -103,7 +104,7 @@ public class EditActivity extends ActionBarActivity{
                             outcome.setTitle(newTitleStr);
                             outcome.setBody(newBodyStr);
                             outcome.saveInBackground();
-
+                            setResult(RESULT_OK);
                             EditActivity.this.finish();
                         }
                     });

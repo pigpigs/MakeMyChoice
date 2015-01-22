@@ -134,6 +134,9 @@ public class MainFragment extends Fragment {
                     query.orderByDescending("createdAt");
                 }else if(sortMode.equals("top")){
                     query.orderByDescending("points");
+                }else{
+                    //default
+                    query.orderByDescending("createdAt");
                 }
 
                 // TODO- delete posts that have no activity for the last X days eg no comment no views
@@ -171,6 +174,8 @@ public class MainFragment extends Fragment {
 
                 if(post.getOutcome() != null){
                     v.setBackgroundColor(getResources().getColor(R.color.list_item_outcome));
+                }else{
+                    v.setBackgroundColor(getResources().getColor(R.color.list_item_post));
                 }
                 return v;
             }

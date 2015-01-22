@@ -28,8 +28,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.SaveCallback;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -131,12 +133,23 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
 
                         }
 
+                        // Set result
+                        Toast.makeText(this, "Submitting Post...", Toast.LENGTH_SHORT).show();
+
                         // Proceed if no image
                         newPost.setCurrentUser();
-                        newPost.saveInBackground();
+                        newPost.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e==null) {
+                                    Toast.makeText(getApplicationContext(), "Post Submitted!", Toast.LENGTH_SHORT).show();
+                                }else{
+                                    Toast.makeText(getApplicationContext(), "Error: "+ e.getCode(),Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
 
-                        // Set result
-                        Toast.makeText(this, "Post submitted!", Toast.LENGTH_SHORT).show();
+
                         setResult(RESULT_OK);
                         finish();
 

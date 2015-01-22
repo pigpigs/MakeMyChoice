@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:background="@color/detail_buttonbar"
+        android:background="@color/actionBarColor"
         >
 
 
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/post_title"
             android:text="Post Title Here"
-            android:textSize="33sp"
+            android:textSize="30sp"
             android:textAllCaps="true"
             android:textStyle="bold"
             android:textColor="@color/post_title"
@@ -38,9 +38,20 @@
             android:text="Post Body Here"
             android:textSize="15sp"
             android:fontFamily="sans-serif-light"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:textColor="#ffffff"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/detail_metadata"
             android:textColor="@color/post_body"
+            android:fontFamily="sans-serif-thin"
+            android:id="@+id/detail_metadata"
+            android:textSize="12sp"
+
             />
     </LinearLayout>
 
@@ -71,7 +82,7 @@
                 android:id="@+id/button_reply"
                 android:src="@drawable/ic_action_reply"
                 android:background="@null"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -79,7 +90,7 @@
                 android:id="@+id/button_heart"
                 android:src="@drawable/heart_button_selector"
                 android:background="@null"
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
             <ImageButton
                 android:layout_width="wrap_content"
@@ -88,7 +99,7 @@
                 android:src="@drawable/ic_action_error"
                 android:background="@null"
 
-                android:layout_weight="1" />
+                android:layout_weight="2" />
 
 
         </LinearLayout>

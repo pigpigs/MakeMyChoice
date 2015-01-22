@@ -1,6 +1,7 @@
 package com.pewpewpew.user.makemychoice;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -28,8 +29,10 @@ public class DetailActivity extends ActionBarActivity {
     private static final String TAG = "DetailActivity_debug";
     public static final String KEY_POST_ID = "post_id_key";
     public static final String KEY_TYPE = "type_key";
+
     public static final int EDIT_TYPE_POST = 8888;
     public static final int EDIT_TYPE_OUTCOME = 8887;
+    public static final int REQUEST_EDIT_POST = 8889;
 //    static iString mPostID; removed to prevent config change problems
 
     private DetailPagerAdapter mPagerAdapter;
@@ -49,6 +52,19 @@ public class DetailActivity extends ActionBarActivity {
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == DetailActivity.REQUEST_EDIT_POST){
+            if(resultCode == Activity.RESULT_OK){
+                Log.i(TAG, "Post was edited, refreshing data now");
+                DetailFragment f = (DetailFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + 0);
+                f.refreshData();
+            }
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_refresh) {
@@ -64,7 +80,8 @@ public class DetailActivity extends ActionBarActivity {
                 Intent intent = new Intent(DetailActivity.this, EditActivity.class);
                 intent.putExtra(KEY_POST_ID, getIntent().getStringExtra(MainFragment.KEY_POST_ID));
                 intent.putExtra(KEY_TYPE, EDIT_TYPE_POST);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_EDIT_POST);
+//                startActivity(intent);
             }else{
                 Log.i(TAG, "Attempting to edit outcome");
                 try {
@@ -76,6 +93,7 @@ public class DetailActivity extends ActionBarActivity {
                         Intent intent = new Intent(DetailActivity.this, PostActivity.class);
                         intent.putExtra(KEY_POST_ID, getIntent().getStringExtra(MainFragment.KEY_POST_ID));
                         intent.putExtra("isOutcome",true);
+//                        startActivityForResult(intent, REQUEST_EDIT_POST);
                         startActivity(intent);
                     }else{
                         Intent intent = new Intent(DetailActivity.this, EditActivity.class);

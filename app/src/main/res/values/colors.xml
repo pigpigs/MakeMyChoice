@@ -4,7 +4,7 @@
     <color name="title_color">#111c40</color>
 
     <color name="subtext">#3c5952</color>
-    <color name="actionBarColor">#22313f</color>
+    <color name="actionBarColor">#4A5258</color>
     <color name="main_background">#ECECEC</color>
     <color name="list_item_post">#f5656c</color>
     <color name="list_item_outcome">#1bbc98</color>
@@ -12,6 +12,6 @@
     <color name="comment_list_background">#F0F9FF</color>
     <color name="post_title">#F0F9FF</color>
     <color name="post_body">#C0D5E4</color>
-    <!-- 446CB3 bright / 8e44ad  -->
+    <!-- another actionbar color #22313f-->
 
 </resources>

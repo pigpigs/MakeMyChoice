@@ -45,7 +45,7 @@ import java.util.List;
 /**
  * Detail of the post.
  *
- * Future - Edit option for users, better looking comments
+ * Future -  better looking comments
  */
 public class DetailFragment  extends Fragment{
     private static final String TAG = "DetailFragment_debug";
@@ -175,7 +175,13 @@ public class DetailFragment  extends Fragment{
                     }
 
 
-
+                    // Get meta data
+                    ((TextView) v.findViewById(R.id.detail_metadata)).setText(
+                            getActivity().getString(R.string.detail_metadata,
+                                    Utility.getTimeSince(thisPost.getCreatedAt()), // timeSince
+                                    thisPost.getUserStr(), // Username
+                                    "0" // numcomments
+                                    ));
 
 
                     // Retrieve comments for the current Post
@@ -256,8 +262,9 @@ public class DetailFragment  extends Fragment{
                 newComment.saveInBackground();
                 refreshData();
             }
+        }else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     /**

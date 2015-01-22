@@ -104,7 +104,7 @@ public class MainActivity extends ActionBarActivity {
 //                                        .commit();
                                 setContentView(R.layout.activity_main_pager);
                                 mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
-                                mViewPager = (ViewPager) findViewById(R.id.pager);
+                                mViewPager = (ViewPager) findViewById(R.id.pager_main);
                                 mViewPager.setAdapter(mPagerAdapter);
                                 Toast.makeText(MainActivity.this, "Welcome " + ParseUser.getCurrentUser().getUsername()+"!", Toast.LENGTH_SHORT).show();
                             } else {
