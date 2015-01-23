@@ -99,6 +99,7 @@ public class MainFragment extends Fragment {
                                     mAdapter.loadObjects();
                                 }
                             }else{
+                                // TODO - implement sort by has outcome and no outcome, probably a checkbox sharedpreference option
                                 Log.i(TAG, "Sort by Hot (Not implemented)");
                             }
                         }

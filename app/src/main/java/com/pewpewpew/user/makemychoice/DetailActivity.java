@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -118,14 +119,58 @@ public class DetailActivity extends ActionBarActivity implements ViewPager.OnPag
             return true;
         }else if(id == id_action_delete){
             Log.i(TAG, "Deleting post");
-            Post post = ParseObject.createWithoutData(Post.class, getIntent().getStringExtra(MainFragment.KEY_POST_ID));
-            post.deleteInBackground();
+            deletePost(getIntent().getStringExtra(MainFragment.KEY_POST_ID));
             // Delete stuff linked to post as well
             finish();
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void deletePost(String postID){
+        Log.i(TAG, "Deleting post with ID: " + postID);
+        Post post = ParseObject.createWithoutData(Post.class, postID);
+        // Delete all comments
+        ParseQuery<Comment> commentParseQuery = ParseQuery.getQuery(Comment.class);
+        commentParseQuery.whereEqualTo("parentPost", post);
+        commentParseQuery.findInBackground(new FindCallback<Comment>() {
+            @Override
+            public void done(List<Comment> comments, ParseException e) {
+                if(e ==null) {
+                    Log.i(TAG, "Deleting... " + comments.get(0).toString());
+                    ParseObject.deleteAllInBackground(comments, null);
+                }else{
+                    Log.i(TAG, "Error while deleting post, Code " + e.getCode());
+                }
+            }
+        });
+
+        // Delete all follow relations?
+        ParseQuery<ParseObject> followQuery = ParseQuery.getQuery("Follow");
+        followQuery.whereEqualTo("postID", postID);
+        followQuery.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> relations, ParseException e) {
+                if(e ==null) {
+                    ParseObject.deleteAllInBackground(relations, null);
+                }else{
+                    Log.i(TAG, "Error while deleting post, Code " + e.getCode());
+                }
+            }
+        });
+
+        // Delete outcome related, dont have to delete outcome comments since it's the same for now
+        post.fetchIfNeededInBackground(new GetCallback<Post>() {
+
+            @Override
+            public void done(Post post, ParseException e) {
+                post.getOutcome().deleteInBackground();
+
+            }
+        });
+
+        // Delete post
+        post.deleteInBackground();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

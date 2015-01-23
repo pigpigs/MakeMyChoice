@@ -93,6 +93,8 @@ public class FollowedFragment extends Fragment {
 
                 if(post.getOutcome() != null){
                     v.setBackgroundColor(getResources().getColor(R.color.list_item_outcome));
+                }else{
+                    v.setBackgroundColor(getResources().getColor(R.color.list_item_post));
                 }
                 return v;
             }

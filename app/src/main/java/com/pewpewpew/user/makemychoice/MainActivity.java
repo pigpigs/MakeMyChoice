@@ -98,10 +98,7 @@ public class MainActivity extends ActionBarActivity {
                         public void done(ParseException e) {
                             if (e == null) {
                                 // Hooray! Let them use the app now.
-//                                setContentView(R.layout.activity_main);
-//                                getSupportFragmentManager().beginTransaction()
-//                                        .add(R.id.some_container, new MainFragment())
-//                                        .commit();
+
                                 setContentView(R.layout.activity_main_pager);
                                 mPagerAdapter = new MainPagerAdapter(getSupportFragmentManager());
                                 mViewPager = (ViewPager) findViewById(R.id.pager_main);
@@ -112,7 +109,7 @@ public class MainActivity extends ActionBarActivity {
                                 // Sign up didn't succeed. Look at the ParseException
                                 // to figure out what went wrong
 
-                                errorMessage.setText("Username is already taken.");
+                                errorMessage.setText("Error: " + e.getMessage());
 
                             }
                         }
