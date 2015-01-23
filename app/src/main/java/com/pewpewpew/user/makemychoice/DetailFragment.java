@@ -80,7 +80,7 @@ public class DetailFragment  extends Fragment{
         // Heart Button for following - Check if user has followed the post. if yes, heart should be lit up, and will unfav onClick
         final ImageButton heartButton = (ImageButton) v.findViewById(R.id.button_heart);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
+        final ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
         query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
         query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -96,13 +96,16 @@ public class DetailFragment  extends Fragment{
         heartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow"); // Follower relationship
-                query.whereEqualTo("from", ParseUser.getCurrentUser());         // from the current user
-                query.whereEqualTo("to", ParseObject.createWithoutData(Post.class, postId)); // to the current post
+
                 query.findInBackground(new FindCallback<ParseObject>() {
                     @Override
                     public void done(List<ParseObject> parseObjects, ParseException e) {
-                        heartButton.setSelected(!heartButton.isSelected()); //flip selected state
+                        boolean buttonState = heartButton.isSelected();
+                        heartButton.setSelected(!buttonState); //flip selected state
+                        OutcomeFragment f = (OutcomeFragment) ((DetailActivity)getActivity()).getFragmentFromPager(R.id.pager, 1);
+                        if(f.getView().findViewById(R.id.detail_stub) == null) {
+                            f.getView().findViewById(R.id.button_heart).setSelected(!buttonState);
+                        }
                         if(parseObjects.size()!=0 ){
                             // User has followed post, unfollow
                             Log.i(TAG, "Unfollowing post");
@@ -180,7 +183,7 @@ public class DetailFragment  extends Fragment{
                             getActivity().getString(R.string.detail_metadata,
                                     Utility.getTimeSince(thisPost.getCreatedAt()), // timeSince
                                     thisPost.getUserStr(), // Username
-                                    "0" // numcomments
+                                    thisPost.getNumComments()
                                     ));
 
 
@@ -191,7 +194,7 @@ public class DetailFragment  extends Fragment{
                         public ParseQuery<Comment> create() {
                             ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
                             query.whereEqualTo("parentPost", mPost);
-                            query.orderByAscending("createdAt");
+                            query.orderByDescending("createdAt");
                             return query;
                         }
                     };
@@ -260,6 +263,10 @@ public class DetailFragment  extends Fragment{
                 newComment.setPost(mPost);
                 newComment.setCurrentUser();
                 newComment.saveInBackground();
+                // Not using mPost in case of config change fk ups
+                Post post = ParseObject.createWithoutData(Post.class, getActivity().getIntent().getStringExtra(MainFragment.KEY_POST_ID));
+                post.incrementNumComments();
+                post.saveInBackground();
                 refreshData();
             }
         }else {
@@ -340,17 +347,19 @@ public class DetailFragment  extends Fragment{
         mPost.refreshInBackground(new RefreshCallback() {
             @Override
             public void done(ParseObject object, ParseException e) {
-                Post thisPost = (Post) object;
-                //Get title
-                String postTitle = thisPost.getTitle();
-                TextView titleTextView = (TextView) getActivity().findViewById(R.id.post_title);
+                if(getView() != null) {
+                    Post thisPost = (Post) object;
+                    //Get title
+                    String postTitle = thisPost.getTitle();
+                    TextView titleTextView = (TextView) getView().findViewById(R.id.post_title);
 //                    Log.i(TAG, "Title: "+postTitle);
-                titleTextView.setText(postTitle);
+                    titleTextView.setText(postTitle);
 
-                //Get post body
-                String postBody = thisPost.getBody();
-                TextView bodyTextView = (TextView) getActivity().findViewById(R.id.post_body);
-                bodyTextView.setText(postBody);
+                    //Get post body
+                    String postBody = thisPost.getBody();
+                    TextView bodyTextView = (TextView) getView().findViewById(R.id.post_body);
+                    bodyTextView.setText(postBody);
+                }
 
             }
         });

@@ -160,10 +160,8 @@ public class MainFragment extends Fragment {
                 postTimeSince.setText(timeSince);
 
                 //Number of comments, use increment on the field every time there is a new post
-                // TODO- implement numComments
                 TextView postNumComments = (TextView)v.findViewById(R.id.post_comment);
-                String numComments = "0";
-                postNumComments.setText("0 comments");
+                postNumComments.setText(post.getNumComments() + " comments");
 
 
                 // Get the username string. This was added as loading classes seem to take super long on Parse. Call getUser when needed.

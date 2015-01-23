@@ -56,7 +56,6 @@ public class CommentDialogFragment extends DialogFragment {
 
                         Intent intent = new Intent().putExtra(KEY_REPLY, content);
                         getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-                        Toast.makeText(getActivity(), "Reply: " + content, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton(R.string.fragment_dialog_cancel, new DialogInterface.OnClickListener() {

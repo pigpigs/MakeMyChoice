@@ -57,6 +57,7 @@ public class FollowedFragment extends Fragment {
                 //Add a constraint to the query that requires a particular key's value matches a value for a key in the results of another ParseQuery
                 query.whereMatchesKeyInQuery("objectId", "postID", innerQuery);
                 // order by descending date added
+                query.orderByDescending("createdAt");
                 return query;
             }
         };

@@ -49,14 +49,11 @@ public class OutcomeFragment extends Fragment {
     private static final int REQUEST_REPLY = 101;
     private static Post mPost;
     private static Outcome mOutcome;
-    static Activity mContext;
-    static View mView;
     static String postId;
     public OutcomeFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mContext = getActivity();
         super.onCreate(savedInstanceState);
     }
 
@@ -65,12 +62,7 @@ public class OutcomeFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         postId = intent.getStringExtra(MainFragment.KEY_POST_ID);
 
-//        Post post = ParseObject.createWithoutData(Post.class, postId);
-
-
         final View v = inflater.inflate(R.layout.fragment_detail_stub, container, false);
-        mView = v;
-
 
 
 
@@ -116,15 +108,15 @@ public class OutcomeFragment extends Fragment {
 //                .commit();
     }
 
-    private static void toggleVisibility(){
-        LinearLayout container = (LinearLayout) mContext.findViewById(R.id.expanded_image_container);
+    private void toggleVisibility(){
+        LinearLayout container = (LinearLayout) getView().findViewById(R.id.expanded_image_container);
 
         if(container.getVisibility() == View.GONE){
             container.setVisibility(View.VISIBLE);
-            ParseImageView parseImageView = (ParseImageView) mContext.findViewById(R.id.expanded_image_view);
+            ParseImageView parseImageView = (ParseImageView) getView().findViewById(R.id.expanded_image_view);
             if(parseImageView.getDrawable() == null){
                 Log.i(TAG, "Setting Image File.");
-                parseImageView.setParseFile(mPost.getImage());
+                parseImageView.setParseFile(mOutcome.getImage());
                 parseImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -146,14 +138,14 @@ public class OutcomeFragment extends Fragment {
         Log.i(TAG, "outcomeid is " + outcomeID);
 
         // Remove the placeholder
-        mView.findViewById(R.id.detail_placeholder).setVisibility(View.GONE);
+        getView().findViewById(R.id.detail_placeholder).setVisibility(View.GONE);
 
-        final View inflatedView = ((ViewStub) mView.findViewById(R.id.detail_stub)).inflate();
+        final View inflatedView = ((ViewStub) getView().findViewById(R.id.detail_stub)).inflate();
         final ListView listView = (ListView) inflatedView.findViewById(R.id.listView_comments);
 
 
 
-        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         final View headerView = inflater.inflate(R.layout.fragment_detail_header, listView, false);
         listView.addHeaderView(headerView);
@@ -214,9 +206,14 @@ public class OutcomeFragment extends Fragment {
             @Override
             public void done(final Post thisPost, ParseException e) {
                 mPost = thisPost;
-//                //Get title
-//                String postTitle = "[OUTCOME] " + thisPost.getTitle();
 
+                // Get meta data
+                ((TextView) inflatedView.findViewById(R.id.detail_metadata)).setText(
+                        getActivity().getString(R.string.detail_metadata,
+                                Utility.getTimeSince(thisPost.getCreatedAt()), // timeSince
+                                thisPost.getUserStr(), // Username
+                                thisPost.getNumComments()
+                        ));
 
                 // Retrieve comments for the current Post
                 ParseQueryAdapter.QueryFactory<Comment> factory = new ParseQueryAdapter.QueryFactory<Comment>() {
@@ -224,12 +221,13 @@ public class OutcomeFragment extends Fragment {
                     public ParseQuery<Comment> create() {
                         ParseQuery<Comment> query = ParseQuery.getQuery(Comment.class);
                         query.whereEqualTo("parentPost", thisPost);
+                        query.orderByDescending("createdAt");
                         return query;
                     }
                 };
                 // FUTURE- Posts to have polls for the choices, comments will indicate which choice the user chose
                 ParseQueryAdapter<Comment> commentsAdapter =
-                        new ParseQueryAdapter<Comment>(mContext, factory){
+                        new ParseQueryAdapter<Comment>(getActivity(), factory){
                             @Override
                             public View getItemView(Comment comment, View v, ViewGroup parent) {
                                 if (v == null){
@@ -296,7 +294,7 @@ public class OutcomeFragment extends Fragment {
     }
 
     public void refreshData(){
-        if(getActivity().findViewById(R.id.detail_stub) == null) {
+        if(getView().findViewById(R.id.detail_stub) == null) {
             // Refresh data as per normal if there was an outcome
             mOutcome.refreshInBackground(new RefreshCallback() {
                 @Override
@@ -305,13 +303,13 @@ public class OutcomeFragment extends Fragment {
 
                     // Get Title
                     String title = thisOutcome.getTitle();
-                    TextView titleTextView = (TextView) mView.findViewById(R.id.post_title);
+                    TextView titleTextView = (TextView) getView().findViewById(R.id.post_title);
                     titleTextView.setText(title);
 
                     //Get  outcome body
                     String outcomeBody = thisOutcome.getBody();
                     Log.i(TAG, "outcome body: " + outcomeBody);
-                    TextView bodyTextView = (TextView) mView.findViewById(R.id.post_body);
+                    TextView bodyTextView = (TextView) getView().findViewById(R.id.post_body);
                     bodyTextView.setText(outcomeBody);
                 }
             });

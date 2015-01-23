@@ -14,6 +14,7 @@ import com.parse.ParseUser;
 public class Post extends ParseObject{
 
     private static final String POST_OUTCOME = "outcome";
+    public static final String POST_NUMCOMMENTS = "numComments";
     private String POST_TITLE = "title";
     private String POST_BODY = "mainBody";
     private String POST_POINTS = "points";
@@ -43,6 +44,21 @@ public class Post extends ParseObject{
 
     public Outcome getOutcome(){return (Outcome) getParseObject(POST_OUTCOME);}
 
+    public ParseUser getUser(){
+        return getParseUser(POST_USER);
+    }
+
+    public String getUserStr(){return getString(POST_USER_STR);}
+    public void setImage(byte[] data){
+        ParseFile file = new ParseFile("post_image.jpg",data);
+        put(POST_IMAGE, file);
+    }
+    public ParseFile getImage(){
+        return getParseFile(POST_IMAGE);
+    }
+
+    public int getNumComments(){return getInt(POST_NUMCOMMENTS);}
+
     public void setTitle(String title){
         put(POST_TITLE, title);
     }
@@ -68,16 +84,10 @@ public class Post extends ParseObject{
         put(POST_USER_STR, user.getUsername());
     }
 
-    public ParseUser getUser(){
-        return getParseUser(POST_USER);
+
+
+    public void incrementNumComments(){
+        increment(POST_NUMCOMMENTS);
     }
 
-    public String getUserStr(){return getString(POST_USER_STR);}
-    public void setImage(byte[] data){
-        ParseFile file = new ParseFile("post_image.jpg",data);
-        put(POST_IMAGE, file);
-    }
-    public ParseFile getImage(){
-        return getParseFile(POST_IMAGE);
-    }
 }

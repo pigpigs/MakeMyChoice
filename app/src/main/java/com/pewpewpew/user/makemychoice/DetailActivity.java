@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * Created by User on 04/10/14.
  */
-public class DetailActivity extends ActionBarActivity {
+public class DetailActivity extends ActionBarActivity implements ViewPager.OnPageChangeListener{
     private static final String TAG = "DetailActivity_debug";
     public static final String KEY_POST_ID = "post_id_key";
     public static final String KEY_TYPE = "type_key";
@@ -34,10 +34,12 @@ public class DetailActivity extends ActionBarActivity {
     public static final int EDIT_TYPE_OUTCOME = 8887;
     public static final int REQUEST_EDIT_POST = 8889;
 //    static iString mPostID; removed to prevent config change problems
+    private static final int id_action_edit = 8890;
+    private static final int id_action_delete = 8891;
 
     private DetailPagerAdapter mPagerAdapter;
     private ViewPager mViewPager;
-    private static final int id_action_edit = 8889;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.detail, menu);
@@ -46,6 +48,8 @@ public class DetailActivity extends ActionBarActivity {
             MenuItem mi = menu.add(Menu.NONE, id_action_edit, Menu.NONE, "Edit");
             mi.setIcon(R.drawable.ic_action_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            MenuItem mi2 = menu.add(Menu.NONE, id_action_delete, Menu.NONE, "Delete Post");
 
         }
         return true;
@@ -56,12 +60,16 @@ public class DetailActivity extends ActionBarActivity {
         if(requestCode == DetailActivity.REQUEST_EDIT_POST){
             if(resultCode == Activity.RESULT_OK){
                 Log.i(TAG, "Post was edited, refreshing data now");
-                DetailFragment f = (DetailFragment) getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager + ":" + 0);
+                DetailFragment f = (DetailFragment) getFragmentFromPager(R.id.pager,0);
                 f.refreshData();
             }
         }else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    public Fragment getFragmentFromPager(int pager, int i) {
+        return getSupportFragmentManager().findFragmentByTag("android:switcher:" + pager + ":" + i);
     }
 
     @Override
@@ -108,6 +116,12 @@ public class DetailActivity extends ActionBarActivity {
 
             }
             return true;
+        }else if(id == id_action_delete){
+            Log.i(TAG, "Deleting post");
+            Post post = ParseObject.createWithoutData(Post.class, getIntent().getStringExtra(MainFragment.KEY_POST_ID));
+            post.deleteInBackground();
+            // Delete stuff linked to post as well
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -121,6 +135,7 @@ public class DetailActivity extends ActionBarActivity {
         // fragments, so use getSupportFragmentManager.
         mPagerAdapter = new DetailPagerAdapter(getSupportFragmentManager());
         mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setOnPageChangeListener(this);
         mViewPager.setAdapter(mPagerAdapter);
 
 //        getSupportFragmentManager()
@@ -152,6 +167,26 @@ public class DetailActivity extends ActionBarActivity {
 
 
     private int NUM_ITEMS = 2;
+
+    @Override
+    public void onPageScrolled(int i, float v, int i2) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+        if(i == 0){
+            setTitle("[ POST ]");
+        }else{
+            setTitle("[ OUTCOME ]");
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
+
+    }
+
     private class DetailPagerAdapter extends FragmentPagerAdapter{
         private DetailPagerAdapter(FragmentManager fm){
             super(fm);
