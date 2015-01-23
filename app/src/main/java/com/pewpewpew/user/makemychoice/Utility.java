@@ -23,10 +23,10 @@ public class Utility {
         long timeSinceInSecs = (dateToday.getTime() - dateCreated.getTime()) / 1000;
 //        Log.i(TAG, "Time Since: "+timeSinceInSecs);
         if (timeSinceInSecs <=60){
-            return "a minute ago";
+            return "a min ago";
         }else if(timeSinceInSecs < 60*60){
             int mins = (int) timeSinceInSecs/60;
-            return mins+" minutes ago";
+            return mins+" mins ago";
         }else if(timeSinceInSecs < 60*60*2){
             // Less than 2 hours, just return 1 hour
             return "an hour ago";

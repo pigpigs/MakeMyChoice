@@ -78,6 +78,11 @@ public class MainActivity extends ActionBarActivity {
                         return;
                     }
 
+                    if(username.length() > 15){
+                        errorMessage.setText("Username too long! Maximum of 15 characters.)");
+                        displayErrorToast();
+                        return;
+                    }
                     if(!password.equals(passwordAgain)){
                         errorMessage.setText("The password in both fields are not the same.");
                         displayErrorToast();

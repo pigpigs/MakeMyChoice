@@ -136,7 +136,6 @@ public class DetailActivity extends ActionBarActivity implements ViewPager.OnPag
             @Override
             public void done(List<Comment> comments, ParseException e) {
                 if(e ==null) {
-                    Log.i(TAG, "Deleting... " + comments.get(0).toString());
                     ParseObject.deleteAllInBackground(comments, null);
                 }else{
                     Log.i(TAG, "Error while deleting post, Code " + e.getCode());
@@ -163,7 +162,14 @@ public class DetailActivity extends ActionBarActivity implements ViewPager.OnPag
 
             @Override
             public void done(Post post, ParseException e) {
-                post.getOutcome().deleteInBackground();
+                if(e ==null){
+                    if(post.getOutcome() != null){
+                        post.getOutcome().deleteInBackground();
+                    }
+                }else{
+                    Log.i(TAG, "Error while deleting post outcome, Code " + e.getCode());
+                }
+
 
             }
         });
