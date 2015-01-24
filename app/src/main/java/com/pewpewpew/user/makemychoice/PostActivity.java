@@ -59,6 +59,8 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
 
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,6 +123,7 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
 
                         // Save the Image if there is one
                         if (mImagePath != null) {
+                            Log.i(TAG, "Picture path: "+mImagePath);
                             //Decode and scale image
                             Bitmap bmp = Utility.makeParseBitmap(mImagePath);
 
@@ -130,7 +133,7 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
                             bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                             byte[] data = stream.toByteArray();
                             newPost.setImage(data);
-
+                            mImagePath = null; // clear imagepath as static vars dont get cleared in onDestroy
                         }
 
                         // Set result
@@ -185,7 +188,7 @@ public class PostActivity extends ActionBarActivity implements PostFragment.Call
                             bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
                             byte[] data = stream.toByteArray();
                             outcome.setImage(data);
-
+                            mImagePath = null; // clear imagepath as static vars dont get cleared in onDestroy
                         }
 
                         // Proceed if no image

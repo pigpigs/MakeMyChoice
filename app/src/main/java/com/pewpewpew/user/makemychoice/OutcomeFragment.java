@@ -237,7 +237,7 @@ public class OutcomeFragment extends Fragment {
                                 ((TextView) v.findViewById(R.id.comment_body)).setText(comment.getBody());
                                 ((TextView) v.findViewById(R.id.comment_meta)).setText(
                                         String.format(" %s | %s ",
-                                                "username",
+                                                thisPost.getUserStr(),
                                                 Utility.getTimeSince(comment.getCreatedAt())
                                         )
                                 );
