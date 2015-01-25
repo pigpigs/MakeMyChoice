@@ -47,7 +47,7 @@ public class OutcomeFragment extends Fragment {
 
     private static final String TAG = "OutcomeFragment_debug";
     private static final int REQUEST_REPLY = 101;
-    private static Post mPost;
+//    private static Post mPost;
     private static Outcome mOutcome;
     static String postId;
     private ParseQueryAdapter<Comment> commentsAdapter;
@@ -81,8 +81,17 @@ public class OutcomeFragment extends Fragment {
                 Log.i(TAG, "Reply received: " + commentBody);
                 Comment newComment = new Comment();
                 newComment.setBody(commentBody);
-                newComment.setPost(mPost);
+                newComment.setCurrentUser();
+
+                 // Not using mPost in case of config change fk ups
+                Post post = ParseObject.createWithoutData(Post.class, getActivity().getIntent().getStringExtra(MainFragment.KEY_POST_ID));
+
+                newComment.setPost(ParseObject.createWithoutData(Post.class, postId));
                 newComment.saveInBackground();
+
+                post.incrementNumComments();
+                post.saveInBackground();
+                refreshData();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -207,7 +216,7 @@ public class OutcomeFragment extends Fragment {
         post.fetchIfNeededInBackground(new GetCallback<Post>() {
             @Override
             public void done(final Post thisPost, ParseException e) {
-                mPost = thisPost;
+//                mPost = thisPost;
 
                 // Get meta data
                 ((TextView) inflatedView.findViewById(R.id.detail_metadata)).setText(
