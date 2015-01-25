@@ -50,6 +50,8 @@ public class OutcomeFragment extends Fragment {
     private static Post mPost;
     private static Outcome mOutcome;
     static String postId;
+    private ParseQueryAdapter<Comment> commentsAdapter;
+
     public OutcomeFragment(){}
 
     @Override
@@ -226,7 +228,7 @@ public class OutcomeFragment extends Fragment {
                     }
                 };
                 // FUTURE- Posts to have polls for the choices, comments will indicate which choice the user chose
-                ParseQueryAdapter<Comment> commentsAdapter =
+                commentsAdapter =
                         new ParseQueryAdapter<Comment>(getActivity(), factory){
                             @Override
                             public View getItemView(Comment comment, View v, ViewGroup parent) {
@@ -237,7 +239,7 @@ public class OutcomeFragment extends Fragment {
                                 ((TextView) v.findViewById(R.id.comment_body)).setText(comment.getBody());
                                 ((TextView) v.findViewById(R.id.comment_meta)).setText(
                                         String.format(" %s | %s ",
-                                                thisPost.getUserStr(),
+                                                comment.getUserStr(),
                                                 Utility.getTimeSince(comment.getCreatedAt())
                                         )
                                 );
@@ -294,6 +296,8 @@ public class OutcomeFragment extends Fragment {
     }
 
     public void refreshData(){
+        commentsAdapter.notifyDataSetChanged();
+        commentsAdapter.loadObjects();
         if(getView().findViewById(R.id.detail_stub) == null) {
             // Refresh data as per normal if there was an outcome
             mOutcome.refreshInBackground(new RefreshCallback() {
@@ -331,6 +335,8 @@ public class OutcomeFragment extends Fragment {
                 }
             });
         }
+
+
     }
     // for PagerAdapter, not sure if needed but wtv
     public static Fragment newInstance(int i) {
